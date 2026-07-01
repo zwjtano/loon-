@@ -47,27 +47,42 @@ $insertAfter = '(?m)^(displayUpList=.*)$'
 $argumentBlock = '$1' + "`n" + ($arguments -join "`n")
 $content = $content -replace $insertAfter, $argumentBlock
 
+$repoRawBase = "https://raw.githubusercontent.com/zwjtano/loon-/master"
+$searchSquareTag = ConvertFrom-Base64Utf8 "6L+H5ruk5pCc57Si5o6o6I2Q"
+$defaultSearchWordTag = ConvertFrom-Base64Utf8 "5bGP6JS96buY6K6k5pCc57Si5qGG5YWz6ZSu6K+N"
+$searchSquareScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/search\/square\? script-path=$repoRawBase/Scripts/bilibili/search-square.js, requires-body=false, tag=$searchSquareTag, enable={filterSearchSuggest}"
+$defaultSearchWordScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=$repoRawBase/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=$defaultSearchWordTag, enable={filterDefaultSearchWord}"
+
 $lines = $content -split "`n"
+$newLines = New-Object System.Collections.Generic.List[string]
+$insertedSearchScripts = $false
+
 for ($i = 0; $i -lt $lines.Count; $i++) {
   $line = $lines[$i]
-
   if ($line -like '*app\.bilibili\.com\/x\/v2\/search\/square*') {
-    $lines[$i] = Add-EnableFlag -Line $line -Flag "filterSearchSuggest" -Separator " "
     continue
   }
 
   if ($line -like '*bilibili\.app\.interface\.v1\.Search\/DefaultWords*mock-response-body*') {
-    $lines[$i] = Add-EnableFlag -Line $line -Flag "filterDefaultSearchWord" -Separator " "
     continue
   }
 
   if ($line -like '*bilibili\.app\.show\.v1\.Popular\/Index*') {
-    $lines[$i] = Add-EnableFlag -Line $line -Flag "filterHotSearch"
+    $line = Add-EnableFlag -Line $line -Flag "filterHotSearch"
+    $newLines.Add($line)
+
+    if (-not $insertedSearchScripts) {
+      $newLines.Add($searchSquareScript)
+      $newLines.Add($defaultSearchWordScript)
+      $insertedSearchScripts = $true
+    }
     continue
   }
+
+  $newLines.Add($line)
 }
 
-$content = ($lines -join "`n").TrimEnd() + "`n"
+$content = ($newLines -join "`n").TrimEnd() + "`n"
 [System.IO.File]::WriteAllText($targetFullPath, $content, [System.Text.UTF8Encoding]::new($false))
 
 Write-Host "Updated $TargetPath from $SourceUrl and reapplied local Loon switches."
