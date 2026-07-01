@@ -8,7 +8,7 @@ function readArgument() {
 }
 
 function parseAllowedNames(value) {
-  const raw = String(value || "推荐,热门,影视,动画");
+  const raw = String(value || "推荐,热门,影视,动画,足球季");
   return raw
     .split(/[,，|/、\s]+/)
     .map((item) => item.trim())
