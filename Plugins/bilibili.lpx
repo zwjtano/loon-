@@ -127,7 +127,7 @@ http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.po
 http-response ^https:\/\/api\.bilibili\.com\/pgc\/page\/(?:bangumi|cinema\/tab) script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=移除观影页广告, enable={customizePgcPage}
 http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/splash script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=移除开屏广告
 http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/home-tabs.js, requires-body=true, tag=自定义首页顶部标签, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]
-http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=精简我的页面, enable={customizeMinePage}
+http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/mine.js, requires-body=true, tag=精简我的页面, enable={customizeMinePage}
 http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=移除首页推荐广告, enable={customizeHomeFeed}
 
 [MITM]

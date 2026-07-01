@@ -63,6 +63,8 @@ $searchSquareScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/searc
 $defaultSearchWordScript = "http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=$repoRawBase/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=$defaultSearchWordTag, enable={filterDefaultSearchWord}"
 $homeTabsTag = ConvertFrom-Base64Utf8 "6Ieq5a6a5LmJ6aaW6aG16aG26YOo5qCH562+"
 $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=$repoRawBase/Scripts/bilibili/home-tabs.js, requires-body=true, tag=$homeTabsTag, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]"
+$minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
+$minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, enable={customizeMinePage}"
 
 $lines = $content -split "`n"
 $newLines = New-Object System.Collections.Generic.List[string]
@@ -94,7 +96,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 
   if ($line -like '*app\.bilibili\.com\/x\/v2\/account\/mine*') {
-    $newLines.Add((Add-EnableFlag -Line $line -Flag "customizeMinePage"))
+    $newLines.Add($minePageScript)
     continue
   }
 
