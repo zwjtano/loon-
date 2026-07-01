@@ -41,12 +41,42 @@ function isEnabled(value) {
 }
 
 function getLabel(item) {
-  return String(item?.title || item?.name || item?.label || "");
+  if (!item || typeof item !== "object") return "";
+  return String(item.title || item.name || item.label || item.desc || item.subtitle || "");
+}
+
+function getSearchText(value) {
+  if (!value || typeof value !== "object") return String(value || "");
+  if (Array.isArray(value)) return value.map(getSearchText).join(" ");
+
+  return Object.keys(value)
+    .map((key) => {
+      const item = value[key];
+      if (typeof item === "string" || typeof item === "number") return String(item);
+      if (item && typeof item === "object") return getSearchText(item);
+      return "";
+    })
+    .join(" ");
+}
+
+function containsUploadCenter(value) {
+  const text = getSearchText(value);
+  return [
+    "投稿中心",
+    "创作中心",
+    "创作者中心",
+    "投稿管理",
+    "稿件管理",
+    "创作首页",
+    "uper",
+    "upload",
+    "creative",
+  ].some((keyword) => text.includes(keyword));
 }
 
 function shouldDropItem(item, config) {
   const label = getLabel(item);
-  if (isEnabled(config.keepMineUploadCenter) && label.includes("投稿中心")) {
+  if (isEnabled(config.keepMineUploadCenter) && containsUploadCenter(item)) {
     return false;
   }
 
