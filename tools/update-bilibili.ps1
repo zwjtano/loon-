@@ -41,6 +41,7 @@ $arguments = @(
   (ConvertFrom-Base64Utf8 "aGlkZUhvbWVCb3R0b21NYWxsPXN3aXRjaCwgdHJ1ZSwgZmFsc2UsIHRhZz3pmpDol4/lupXmoI/jgIzkvJrlkZjotK3jgI0sIGRlc2M9LSB0cnVlOiDlvIDlkK9cbi0gZmFsc2U6IOWFs+mXrQ=="),
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplUGdjUGFnZT1zd2l0Y2gsIHRydWUsIGZhbHNlLCB0YWc957K+566A44CM6KeC5b2x6aG144CNLCBkZXNjPS0gdHJ1ZTog5byA5ZCvXG4tIGZhbHNlOiDlhbPpl60="),
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplTWluZVBhZ2U9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeeyvueugOOAjOaIkeeahOmhtemdouOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
+  (ConvertFrom-Base64Utf8 "a2VlcE1pbmVVcGxvYWRDZW50ZXI9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeS/neeVmeOAjOaKleeov+S4reW/g+OAjSwgZGVzYz0tIHRydWU6IOS/neeVmVxuLSBmYWxzZTog6Lef6ZqP5oiR55qE6aG16Z2i57K+566A"),
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplSG9tZUZlZWQ9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPei/h+a7pOOAjOmmlumhteaOqOiNkOa1geOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
   (ConvertFrom-Base64Utf8 "ZmlsdGVySG90U2VhcmNoPXN3aXRjaCwgdHJ1ZSwgZmFsc2UsIHRhZz3ov4fmu6TjgIzng63mkJwv54Ot6Zeo6K+d6aKY44CNLCBkZXNjPS0gdHJ1ZTog5byA5ZCvXG4tIGZhbHNlOiDlhbPpl60="),
   (ConvertFrom-Base64Utf8 "ZmlsdGVyU2VhcmNoU3VnZ2VzdD1zd2l0Y2gsIHRydWUsIGZhbHNlLCB0YWc96L+H5ruk44CM5pCc57Si5o6o6I2Q44CNLCBkZXNjPS0gdHJ1ZTog5byA5ZCvXG4tIGZhbHNlOiDlhbPpl60="),
@@ -63,6 +64,8 @@ $searchSquareScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/searc
 $defaultSearchWordScript = "http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=$repoRawBase/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=$defaultSearchWordTag, enable={filterDefaultSearchWord}"
 $homeTabsTag = ConvertFrom-Base64Utf8 "6Ieq5a6a5LmJ6aaW6aG16aG26YOo5qCH562+"
 $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=$repoRawBase/Scripts/bilibili/home-tabs.js, requires-body=true, tag=$homeTabsTag, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]"
+$minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
+$minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, argument=[{keepMineUploadCenter}], enable={customizeMinePage}"
 
 $lines = $content -split "`n"
 $newLines = New-Object System.Collections.Generic.List[string]
@@ -94,7 +97,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 
   if ($line -like '*app\.bilibili\.com\/x\/v2\/account\/mine*') {
-    $newLines.Add((Add-EnableFlag -Line $line -Flag "customizeMinePage"))
+    $newLines.Add($minePageScript)
     continue
   }
 
