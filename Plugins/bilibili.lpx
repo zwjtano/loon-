@@ -71,13 +71,11 @@ URL-REGEX, "^http:\/\/[\d\.]+:8000\/v1\/resource\/\w{32}-1-SPLASH", REJECT-VIDEO
 ^https:\/\/app\.bilibili\.com\/x\/resource\/top\/activity\? mock-response-body data-type=text status-code=200 data="{"code":-404,"message":"啥都木有","ttl":1,"data":null}"
 
 # 搜索框填充词
-^https:\/\/app\.bilibili\.com\/x\/v2\/search\/square\? mock-response-body data-type=text status-code=200 data="{"code":0,"message":"0","ttl":1,"data":{"type":"history","title":"搜索历史","search_hotword_revision":2}}" enable={filterSearchSuggest}
 
 # 请求头处理
 ^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.(?:interface\.v1\.(?:Teenagers\/ModeStatus|Search\/DefaultWords)|view\.v1\.View\/TFInfo|viewunite\.v1\.View\/(?:PlayPause|ViewEndPage))$ response-header-add grpc-status 0
 
 # 屏蔽默认搜索框关键词
-^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ mock-response-body data-type=text data="AAAAACkaHeaQnOe0ouinhumikeOAgeeVquWJp+aIlnVw5Li7IgAoAToAQgBKAA==" mock-data-is-base64=true enable={filterDefaultSearchWord}
 
 # 青少年模式
 ^https:\/\/grpc\.biliapi\.net\/bilibili\.app\.interface\.v1\.Teenagers\/ModeStatus$ mock-response-body data-type=text data="AAAAABMKEQgCEgl0ZWVuYWdlcnMgAioA" mock-data-is-base64=true
@@ -105,6 +103,8 @@ http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.com
 http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.main\.community\.reply\.v1\.Reply\/MainList$ script-path=https://rucu6.pages.dev/Scripts/bilibili/request.js, requires-body=true, binary-body-mode=true, tag=移除评论区广告, argument=[{purifyComment}], enable={optimizeRequest}
 http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.dynamic\.v2\.Dynamic\/DynAll$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=移除动态页面广告, argument=[{displayUpList}]
 http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=移除热门话题, enable={filterHotSearch}
+http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/search\/square\? script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/search-square.js, requires-body=false, tag=过滤搜索推荐, enable={filterSearchSuggest}
+http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=屏蔽默认搜索框关键词, enable={filterDefaultSearchWord}
 http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.playurl\.v1\.PlayURL\/PlayView$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=移除播放页面广告 playview
 http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.playerunite\.v1\.Player\/PlayViewUnite$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=移除播放页面广告 playerunite
 http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.view\.v1\.View\/(?:View|ViewProgress)$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=移除播放页面广告 view
