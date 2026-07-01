@@ -1,10 +1,57 @@
-function readArgument() {
-  if (typeof $argument === "undefined") return "";
-  if (typeof $argument === "string") return $argument;
-  if ($argument && typeof $argument === "object") {
-    return $argument.homeTopTabs || "";
+function parseArguments() {
+  const defaults = {
+    homeTopTabs: "推荐,热门,影视,动画,足球季",
+    customizeHomeTabs: true,
+    hideHomeTopGameCenter: true,
+    hideHomeBottomPublish: true,
+    hideHomeBottomMall: true,
+  };
+
+  if (typeof $argument === "undefined") return defaults;
+
+  if (Array.isArray($argument)) {
+    const keys = [
+      "homeTopTabs",
+      "customizeHomeTabs",
+      "hideHomeTopGameCenter",
+      "hideHomeBottomPublish",
+      "hideHomeBottomMall",
+    ];
+    return $argument.reduce((config, value, index) => {
+      if (keys[index]) config[keys[index]] = value;
+      return config;
+    }, { ...defaults });
   }
-  return "";
+
+  if (typeof $argument === "string") {
+    const raw = $argument.trim();
+    if (!raw) return defaults;
+
+    try {
+      return { ...defaults, ...JSON.parse(raw) };
+    } catch (_) {
+      if (raw.includes("=")) {
+        return raw.split(/[&;]/).reduce((config, item) => {
+          const [key, ...valueParts] = item.split("=");
+          const value = valueParts.join("=");
+          if (key && value) config[key.trim()] = decodeURIComponent(value.trim());
+          return config;
+        }, { ...defaults });
+      }
+      return { ...defaults, homeTopTabs: raw };
+    }
+  }
+
+  if ($argument && typeof $argument === "object") {
+    return { ...defaults, ...$argument };
+  }
+
+  return defaults;
+}
+
+function isEnabled(value) {
+  if (typeof value === "boolean") return value;
+  return String(value).toLowerCase() !== "false";
 }
 
 function parseAllowedNames(value) {
@@ -37,20 +84,26 @@ function filterByName(items, allowedNames) {
 }
 
 let body = JSON.parse($response.body || "{}");
-let allowedNames = parseAllowedNames(readArgument());
+let config = parseArguments();
+let allowedNames = parseAllowedNames(config.homeTopTabs);
 
 if (body.data) {
-  body.data.tab = filterByName(body.data.tab, allowedNames);
+  if (isEnabled(config.customizeHomeTabs)) {
+    body.data.tab = filterByName(body.data.tab, allowedNames);
+  }
 
-  if (Array.isArray(body.data.top)) {
+  if (isEnabled(config.hideHomeTopGameCenter) && Array.isArray(body.data.top)) {
     body.data.top = body.data.top.filter((item) => item.name !== "游戏中心");
     fixPosition(body.data.top);
   }
 
   if (Array.isArray(body.data.bottom)) {
-    body.data.bottom = body.data.bottom.filter(
-      (item) => item.name !== "发布" && item.name !== "会员购" && item.tab_id !== "会员购Bottom",
-    );
+    if (isEnabled(config.hideHomeBottomPublish)) {
+      body.data.bottom = body.data.bottom.filter((item) => item.name !== "发布");
+    }
+    if (isEnabled(config.hideHomeBottomMall)) {
+      body.data.bottom = body.data.bottom.filter((item) => item.name !== "会员购" && item.tab_id !== "会员购Bottom");
+    }
     fixPosition(body.data.bottom);
   }
 }
