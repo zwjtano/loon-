@@ -24,4 +24,13 @@ const body = base64ToUint8Array(
   "AAAAACkaHeaQnOe0ouinhumikeOAgeeVquWJp+aIlnVw5Li7IgAoAToAQgBKAA==",
 );
 
-$done({ body });
+$done({
+  response: {
+    status: 200,
+    headers: {
+      "content-type": "application/grpc",
+      "grpc-status": "0",
+    },
+    body,
+  },
+});
