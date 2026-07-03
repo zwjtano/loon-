@@ -2,7 +2,7 @@
 #!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、广告图片与广告竞价接口。
 #!author=Codex & zwjtano
 #!category=zwjtano
-#!homepage=https://github.com/zwjtano/blockAds-module
+#!homepage=https://github.com/zwjtano/loon-
 #!icon=https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/00/a2/9a/00a29a65-e92e-52da-15d5-c13b1c83fe2e/AppIcon-0-1x_U007epad-0-11-0-85-220-0.png/512x512bb.jpg
 #!date=2026-07-03
 #!loon_version=3.4.0
