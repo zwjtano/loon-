@@ -24,6 +24,8 @@
 
 基于上游哔哩哔哩 Loon 插件进行个人化整理，保留常用净化能力，并增加了搜索页和首页的自定义开关。
 
+上游作者：[RuCu6](https://github.com/RuCu6)、[kokoryh](https://github.com/kokoryh)、[可莉](https://gitlab.com/lodepuly/vpn_tool)。上游地址：[https://rucu6.pages.dev/Plugins/bilibili.lpx](https://rucu6.pages.dev/Plugins/bilibili.lpx)。
+
 - 过滤热搜、热门话题和搜索建议
 - 屏蔽默认搜索框关键词
 - 支持自定义首页顶部频道标签
