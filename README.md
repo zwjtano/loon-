@@ -2,13 +2,15 @@
 
 这个仓库用于保存个人维护的 Loon 插件和相关脚本。
 
-> 一键添加链接使用 Kelee Hub 同款格式：`loon://import?plugin=插件地址`。
+> 一键添加按钮使用 Kelee Hub 同款格式：`loon://import?plugin=插件地址`。
 
 ## 插件列表
 
 ### FotMob 去广告
 
-一键添加：
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx)
+
+一键添加链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
@@ -24,7 +26,9 @@ https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads
 
 ### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
 
-一键添加：
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx)
+
+一键添加链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
@@ -40,7 +44,9 @@ https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibi
 
 ### 哔哩哔哩自定义插件
 
-一键添加：
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx)
+
+一键添加链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
