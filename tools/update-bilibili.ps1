@@ -75,7 +75,9 @@ $defaultSearchWordTag = ConvertFrom-Base64Utf8 "5bGP6JS96buY6K6k5pCc57Si5qGG5YWz
 $searchSquareScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/search\/square\? script-path=$repoRawBase/Scripts/bilibili/search-square.js, requires-body=false, tag=$searchSquareTag, enable={filterSearchSuggest}"
 $defaultSearchWordScript = "http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=$repoRawBase/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=$defaultSearchWordTag, enable={filterDefaultSearchWord}"
 $popularHideFollowTag = ConvertFrom-Base64Utf8 "6ZqQ6JeP54Ot6Zeo6aG15YWz5rOo5oyJ6ZKu"
-$popularHideFollowScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHideFollowTag, argument=[{hidePopularFollowButton},{filterHotSearch}]"
+$popularHideFollowScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHideFollowTag, argument=hideFollow, enable={hidePopularFollowButton}"
+$popularHotFilterTag = ConvertFrom-Base64Utf8 "6L+H5ruk54Ot5pCc54Ot6Zeo6K+d6aKY"
+$popularHotFilterScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHotFilterTag, argument=filterHot, enable={filterHotSearch}"
 $homeTabsTag = ConvertFrom-Base64Utf8 "6Ieq5a6a5LmJ6aaW6aG16aG26YOo5qCH562+"
 $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=$repoRawBase/Scripts/bilibili/home-tabs.js, requires-body=true, tag=$homeTabsTag, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]"
 $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
@@ -126,6 +128,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
   if ($line -like '*bilibili\.app\.show\.v1\.Popular\/Index*') {
     $newLines.Add($popularHideFollowScript)
+    $newLines.Add($popularHotFilterScript)
 
     if (-not $insertedSearchScripts) {
       $newLines.Add($searchSquareScript)
