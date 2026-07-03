@@ -9,7 +9,6 @@
 | 图标 | 插件 | 原始链接 | 一键导入 |
 | --- | --- | --- | --- |
 | <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/00/a2/9a/00a29a65-e92e-52da-15d5-c13b1c83fe2e/AppIcon-0-1x_U007epad-0-11-0-85-220-0.png/100x100bb.jpg" width="42" height="42" /> | FotMob 去广告 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/fotmob.html) |
-| <img src="https://rucu6.pages.dev/Icons/app/myblockads.png" width="42" height="42" /> | MyBlockAds - 保留哔哩哔哩热搜和搜索发现 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/myblockads.html) |
 | <img src="https://rucu6.pages.dev/Icons/app/bilibili.png" width="42" height="42" /> | 哔哩哔哩自定义插件 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/bilibili.html) |
 
 ## 原生导入链接
@@ -20,12 +19,6 @@
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
-```
-
-### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
-
-```text
-loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
 ```
 
 ### 哔哩哔哩自定义插件
