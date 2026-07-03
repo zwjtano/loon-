@@ -2,54 +2,54 @@
 
 这个仓库用于保存个人维护的 Loon 插件和相关脚本。
 
-> GitHub README 会过滤 `loon://` 这类自定义协议，所以页面按钮使用 Loon 的 HTTPS 中转链接：`https://www.nsloon.com/openloon/import?plugin=encode(url)`。下方同时保留 Kelee Hub 同款 `loon://import?plugin=url` 原生链接。
+> 一键添加链接使用 Kelee Hub 同款格式：`loon://import?plugin=插件地址`。
 
 ## 插件列表
 
 ### FotMob 去广告
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2FFotMob_remove_ads.lpx)
-
-```text
-https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
-```
-
-Kelee Hub 同款原生导入链接：
+一键添加：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
+```
+
+插件地址：
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
 ```
 
 基于 Loon HAR 抓包整理，用于清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、广告图片与广告竞价接口。
 
 ### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fmyblockads-bilibili-search-preserved.lpx)
-
-```text
-https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
-```
-
-Kelee Hub 同款原生导入链接：
+一键添加：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
+```
+
+插件地址：
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
 ```
 
 从 RuCu6 的 MyBlockAds 插件自动同步，并在上游出现相关规则时保留哔哩哔哩热搜、搜索发现和默认搜索词。
 
 ### 哔哩哔哩自定义插件
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fbilibili.lpx)
-
-```text
-https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
-```
-
-Kelee Hub 同款原生导入链接：
+一键添加：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
+```
+
+插件地址：
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
 ```
 
 ## 更新上游哔哩哔哩插件
