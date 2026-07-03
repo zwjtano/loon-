@@ -41,6 +41,8 @@ $content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
   return $Match.Value + ', zwjtano[https://github.com/zwjtano]'
 })
 
+$content = [regex]::Replace($content, '(?m)^#!icon=.*$', '#!icon=https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png')
+
 
 $arguments = @(
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplRHluYW1pY1BhZ2U9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeeyvueugOOAjOWKqOaAgemhteOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
