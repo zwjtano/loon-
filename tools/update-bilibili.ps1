@@ -31,6 +31,16 @@ if (-not (Test-Path $targetDir)) {
 $webClient = [System.Net.WebClient]::new()
 $sourceBytes = $webClient.DownloadData($SourceUrl)
 $content = [System.Text.Encoding]::UTF8.GetString($sourceBytes) -replace "`r`n", "`n"
+$content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
+  param($Match)
+
+  if ($Match.Value -match 'zwjtano') {
+    return $Match.Value
+  }
+
+  return $Match.Value + ', zwjtano[https://github.com/zwjtano]'
+})
+
 
 $arguments = @(
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplRHluYW1pY1BhZ2U9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeeyvueugOOAjOWKqOaAgemhteOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
