@@ -27,7 +27,6 @@
 上游作者：[RuCu6](https://github.com/RuCu6)、[kokoryh](https://github.com/kokoryh)、[可莉](https://gitlab.com/lodepuly/vpn_tool)。上游地址：[https://rucu6.pages.dev/Plugins/bilibili.lpx](https://rucu6.pages.dev/Plugins/bilibili.lpx)。
 
 - 过滤热搜、热门话题和搜索建议
-- 移除热门页 UP 推荐卡的关注按钮
 - 屏蔽默认搜索框关键词
 - 支持自定义首页顶部频道标签
 - 支持隐藏首页游戏中心、底部发布、会员购等入口
@@ -42,7 +41,7 @@
 
 ## 维护说明
 
-哔哩哔哩插件已配置 GitHub Actions 自动更新，每天北京时间 10:30 从上游同步一次，并会重新套用本地自定义开关、脚本路径和热门页关注按钮过滤规则。如果需要手动更新，可以运行：
+哔哩哔哩插件已配置 GitHub Actions 自动更新，每天北京时间 10:30 从上游同步一次，并会重新套用本地自定义开关和脚本规则。如果需要手动更新，可以运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\update-bilibili.ps1
