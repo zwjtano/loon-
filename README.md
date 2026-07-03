@@ -1,97 +1,97 @@
-# Loon ????
+# Loon 插件仓库
 
-????????????? Loon ????????
+这个仓库用于保存个人维护的 Loon 插件和相关脚本。
 
-> GitHub README ??? `loon://` ???????????? `zwjtano.github.io` ??????????? Kelee Hub ?????`loon://import?plugin=????`?
+> GitHub README 会过滤 `loon://` 自定义协议，所以按钮指向 `zwjtano.github.io` 跳转页；跳转页内部使用 Kelee Hub 同款格式：`loon://import?plugin=插件地址`。
 
-## ????
+## 插件列表
 
-### FotMob ???
+### FotMob 去广告
 
-[![????? Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/fotmob.html)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/fotmob.html)
 
-???????
+一键添加页面：
 
 ```text
 https://zwjtano.github.io/loon-/import/fotmob.html
 ```
 
-Kelee Hub ?????????
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
 ```
 
-?????
+插件地址：
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
 ```
 
-?? Loon HAR ????????? FotMob ?? house ads???????????? SDK?????????????
+基于 Loon HAR 抓包整理，用于清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、广告图片与广告竞价接口。
 
-### MyBlockAds - ?????????????
+### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
 
-[![????? Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/myblockads.html)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/myblockads.html)
 
-???????
+一键添加页面：
 
 ```text
 https://zwjtano.github.io/loon-/import/myblockads.html
 ```
 
-Kelee Hub ?????????
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
 ```
 
-?????
+插件地址：
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
 ```
 
-? RuCu6 ? MyBlockAds ??????????????????????????????????????
+从 RuCu6 的 MyBlockAds 插件自动同步，并在上游出现相关规则时保留哔哩哔哩热搜、搜索发现和默认搜索词。
 
-### ?????????
+### 哔哩哔哩自定义插件
 
-[![????? Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/bilibili.html)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://zwjtano.github.io/loon-/import/bilibili.html)
 
-???????
+一键添加页面：
 
 ```text
 https://zwjtano.github.io/loon-/import/bilibili.html
 ```
 
-Kelee Hub ?????????
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
 ```
 
-?????
+插件地址：
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
 ```
 
-## ??????????
+## 更新上游哔哩哔哩插件
 
-?????????
+在仓库根目录运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\update-bilibili.ps1
 ```
 
-??????????????? `bilibili.lpx`?
+脚本会从下面地址下载最新的上游 `bilibili.lpx`：
 
 ```text
 https://rucu6.pages.dev/Plugins/bilibili.lpx
 ```
 
-???????????
+然后重新应用本地开关：
 
-- ?? / ??????
-- ??????
-- ??????????
+- 热搜 / 热门话题过滤
+- 搜索建议过滤
+- 默认搜索框关键词过滤
