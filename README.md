@@ -6,7 +6,7 @@
 
 ### FotMob 去广告
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2FFotMob_remove_ads.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2FFotMob_remove_ads.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads
 
 ### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fmyblockads-bilibili-search-preserved.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fmyblockads-bilibili-search-preserved.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
@@ -26,7 +26,7 @@ https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibi
 
 ### 哔哩哔哩自定义插件
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](loon://import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fbilibili.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fbilibili.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
