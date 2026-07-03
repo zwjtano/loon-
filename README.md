@@ -2,19 +2,19 @@
 
 这个仓库用于保存个人维护的 Loon 插件和相关脚本。
 
-> GitHub README 会过滤 `loon://` 这类自定义协议，所以页面按钮使用 Loon 的 HTTPS 中转链接。下方同时保留 Kelee Hub 同款 `loon://import?plugin=` 原生链接。
+> GitHub README 会过滤 `loon://` 这类自定义协议，所以页面按钮使用 Loon 的 HTTPS 中转链接：`https://www.nsloon.com/openloon/import?plugin=encode(url)`。下方同时保留 Kelee Hub 同款 `loon://import?plugin=url` 原生链接。
 
 ## 插件列表
 
 ### FotMob 去广告
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2FFotMob_remove_ads.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
 ```
 
-原生导入链接：
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
@@ -24,13 +24,13 @@ loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plug
 
 ### MyBlockAds - 保留哔哩哔哩热搜和搜索发现
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fmyblockads-bilibili-search-preserved.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
 ```
 
-原生导入链接：
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
@@ -40,13 +40,13 @@ loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plug
 
 ### 哔哩哔哩自定义插件
 
-[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx)
+[![一键添加到 Loon](https://img.shields.io/badge/Loon-%E4%B8%80%E9%94%AE%E6%B7%BB%E5%8A%A0-5B8DEF?style=for-the-badge)](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzwjtano%2Floon-%2Fmaster%2FPlugins%2Fbilibili.lpx)
 
 ```text
 https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
 ```
 
-原生导入链接：
+Kelee Hub 同款原生导入链接：
 
 ```text
 loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
