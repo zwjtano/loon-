@@ -77,6 +77,8 @@ $homeTabsTag = ConvertFrom-Base64Utf8 "6Ieq5a6a5LmJ6aaW6aG16aG26YOo5qCH562+"
 $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=$repoRawBase/Scripts/bilibili/home-tabs.js, requires-body=true, tag=$homeTabsTag, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]"
 $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
 $minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, enable={customizeMinePage}"
+$popularHideFollowTag = ConvertFrom-Base64Utf8 "56e76Zmk54Ot6Zeo6aG15YWz5rOo5oyJ6ZKu"
+$popularHideFollowScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHideFollowTag, enable={filterHotSearch}"
 
 $lines = $content -split "`n"
 $newLines = New-Object System.Collections.Generic.List[string]
@@ -118,8 +120,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 
   if ($line -like '*bilibili\.app\.show\.v1\.Popular\/Index*') {
-    $line = Add-EnableFlag -Line $line -Flag "filterHotSearch"
-    $newLines.Add($line)
+    $newLines.Add($popularHideFollowScript)
 
     if (-not $insertedSearchScripts) {
       $newLines.Add($searchSquareScript)
