@@ -7,7 +7,7 @@
 | 图标 | 插件 | 原始链接 | 一键导入 |
 | --- | --- | --- | --- |
 | <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/00/a2/9a/00a29a65-e92e-52da-15d5-c13b1c83fe2e/AppIcon-0-1x_U007epad-0-11-0-85-220-0.png/100x100bb.jpg" width="42" height="42" /> | FotMob 去广告 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/fotmob.html) |
-| <img src="https://rucu6.pages.dev/Icons/app/bilibili.png" width="42" height="42" /> | 哔哩哔哩自定义插件 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/bilibili.html) |
+| <img src="https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png" width="42" height="42" /> | 哔哩哔哩自定义插件 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/bilibili.html) |
 
 ## 插件功能
 
