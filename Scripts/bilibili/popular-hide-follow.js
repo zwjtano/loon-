@@ -45,8 +45,8 @@ function patchGrpc(bytes) {
       payload = patched;
     }
 
-    const framedPayload = compressed === 1 ? gzip(payload) : payload;
-    out.push(compressed);
+    const framedPayload = payload;
+    out.push(0);
     out.push((framedPayload.length >>> 24) & 255);
     out.push((framedPayload.length >>> 16) & 255);
     out.push((framedPayload.length >>> 8) & 255);
@@ -69,10 +69,8 @@ function patchMessage(bytes) {
     if (!key) return bytes;
     offset = key.next;
 
-    const fieldNumber = key.value >>> 3;
     const wireType = key.value & 7;
-
-    if (fieldNumber === 0) return bytes;
+    if ((key.value >>> 3) === 0) return bytes;
 
     if (wireType === 0) {
       const value = readVarint(bytes, offset);
@@ -208,9 +206,4 @@ function pushBytes(out, bytes) {
 function gunzip(bytes) {
   if (typeof $utils !== "undefined" && $utils.ungzip) return toBytes($utils.ungzip(bytes));
   throw new Error("$utils.ungzip is unavailable");
-}
-
-function gzip(bytes) {
-  if (typeof $utils !== "undefined" && $utils.gzip) return toBytes($utils.gzip(bytes));
-  throw new Error("$utils.gzip is unavailable");
 }
