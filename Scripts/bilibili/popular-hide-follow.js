@@ -6,11 +6,11 @@
 const FOLLOW_TEXT = utf8("+ 关注");
 const FOLLOW_MARKERS = [utf8("up_follow"), utf8("up-follow")];
 
-let body = toBytes($response.body);
+let body = toBytes(typeof $response.bodyBytes !== "undefined" ? $response.bodyBytes : $response.body);
 
 try {
   body = patchGrpc(body);
-  $done({ body });
+  $done({ body, bodyBytes: body });
 } catch (e) {
   console.log(`popular-hide-follow failed: ${e}`);
   $done({});
@@ -108,11 +108,7 @@ function patchMessage(bytes) {
     const value = bytes.slice(valueStart, valueEnd);
     offset = valueEnd;
 
-    if (
-      fieldNumber === 17 &&
-      contains(value, FOLLOW_TEXT) &&
-      FOLLOW_MARKERS.some((marker) => contains(value, marker))
-    ) {
+    if (isFollowButtonField(value)) {
       any = true;
       continue;
     }
@@ -165,6 +161,14 @@ function encodeLengthDelimited(keyRaw, value) {
   pushBytes(out, encodeVarint(value.length));
   pushBytes(out, value);
   return Uint8Array.from(out);
+}
+
+function isFollowButtonField(value) {
+  return (
+    value.length <= 256 &&
+    contains(value, FOLLOW_TEXT) &&
+    FOLLOW_MARKERS.some((marker) => contains(value, marker))
+  );
 }
 
 function contains(bytes, needle) {
