@@ -1,6 +1,30 @@
-# Loon Modules
+# Loon Plugins
 
 This repository keeps local Loon plugin customizations.
+
+## Plugins
+
+### FotMob ad block
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/FotMob_remove_ads.lpx
+```
+
+Built from Loon HAR captures. It clears FotMob house ads and blocks captured ad SDK, image, and bidding endpoints.
+
+### MyBlockAds with Bilibili search preserved
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/myblockads-bilibili-search-preserved.lpx
+```
+
+Synced from RuCu6's MyBlockAds plugin and patched to preserve Bilibili hot search, search discovery, and default search words when those rules appear upstream.
+
+### Bilibili custom plugin
+
+```text
+https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx
+```
 
 ## Update upstream Bilibili plugin
 
