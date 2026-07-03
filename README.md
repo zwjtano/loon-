@@ -29,19 +29,21 @@ loon://import?plugin=https://raw.githubusercontent.com/zwjtano/loon-/master/Plug
 
 ## 更新上游哔哩哔哩插件
 
-在仓库根目录运行：
+仓库已配置 GitHub Actions 自动更新：每天北京时间 10:30 从上游同步一次 `bilibili.lpx`，然后重新应用本地自定义开关；如果上游没有变化，任务不会提交空更新。
+
+也可以在 GitHub Actions 页面手动运行 `Update Bilibili Plugin`，或者在仓库根目录本地运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\update-bilibili.ps1
 ```
 
-脚本会从下面地址下载最新的上游 `bilibili.lpx`：
+上游地址：
 
 ```text
 https://rucu6.pages.dev/Plugins/bilibili.lpx
 ```
 
-然后重新应用本地开关：
+同步后会重新应用这些本地开关：
 
 - 热搜 / 热门话题过滤
 - 搜索建议过滤
