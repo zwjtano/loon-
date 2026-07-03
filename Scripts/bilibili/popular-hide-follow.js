@@ -1,37 +1,23 @@
 /*
  * Bilibili Popular/Index
- * Argument: hideFollow or filterHot
+ * Remove the top-level UP recommendation card that contains the follow button.
  */
 
-var arg = parseArgument(typeof $argument === "undefined" ? "" : $argument);
 var body = toBytes(typeof $response.bodyBytes !== "undefined" ? $response.bodyBytes : $response.body);
 
-if (!arg.hideFollow && !arg.filterHot) {
-  $done({});
-} else {
-  try {
-    var patched = patchGrpcFrames(body, arg);
-    if (patched === body) {
-      $done({});
-    } else {
-      $done({ bodyBytes: patched });
-    }
-  } catch (e) {
-    console.log("popular-hide-follow failed: " + e);
+try {
+  var patched = patchGrpcFrames(body);
+  if (patched === body) {
     $done({});
+  } else {
+    $done({ bodyBytes: patched });
   }
+} catch (e) {
+  console.log("popular-hide-follow failed: " + e);
+  $done({});
 }
 
-function parseArgument(value) {
-  var text = String(value || "");
-  var matches = text.match(/true|false/gi) || [];
-  return {
-    hideFollow: /hideFollow|hidePopularFollowButton/i.test(text) || (matches.length > 0 && matches[0].toLowerCase() === "true"),
-    filterHot: /filterHot|filterHotSearch/i.test(text) || (matches.length > 1 && matches[1].toLowerCase() === "true"),
-  };
-}
-
-function patchGrpcFrames(bytes, options) {
+function patchGrpcFrames(bytes) {
   if (bytes.length < 5) return bytes;
 
   var chunks = [];
@@ -54,7 +40,7 @@ function patchGrpcFrames(bytes, options) {
 
     if (compressed === 1) payload = gunzip(payload);
 
-    var patchedPayload = patchPopularIndex(payload, options);
+    var patchedPayload = patchPopularIndex(payload);
     if (patchedPayload !== payload) changed = true;
 
     chunks.push(makeFrame(patchedPayload));
@@ -64,7 +50,7 @@ function patchGrpcFrames(bytes, options) {
   return concatBytes(chunks);
 }
 
-function patchPopularIndex(bytes, options) {
+function patchPopularIndex(bytes) {
   var fields = [];
   var offset = 0;
   var changed = false;
@@ -111,7 +97,7 @@ function patchPopularIndex(bytes, options) {
     var value = bytes.slice(offset, offset + len.value);
     offset += len.value;
 
-    if (fieldNumber === 1 && shouldRemoveCard(value, options)) {
+    if (fieldNumber === 1 && isFollowCard(value)) {
       changed = true;
       continue;
     }
@@ -123,12 +109,13 @@ function patchPopularIndex(bytes, options) {
   return concatBytes(fields);
 }
 
-function shouldRemoveCard(value, options) {
-  if (options.filterHot && (containsText(value, "rcmd_one_item") || containsText(value, "small_cover_v5_ad") || containsText(value, "topic_list"))) {
-    return true;
-  }
-
-  return options.hideFollow && containsText(value, "rcmd_one_item");
+function isFollowCard(value) {
+  return (
+    containsText(value, "rcmd_one_item") ||
+    containsText(value, "+ 关注") ||
+    containsText(value, "up_follow") ||
+    containsText(value, "up-follow")
+  );
 }
 
 function readVarint(bytes, offset) {
