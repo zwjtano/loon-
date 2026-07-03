@@ -1,6 +1,6 @@
 /*
  * Bilibili Popular/Index
- * Argument format: [hidePopularFollowButton, filterHotSearch]
+ * Argument: hideFollow or filterHot
  */
 
 var arg = parseArgument(typeof $argument === "undefined" ? "" : $argument);
@@ -26,8 +26,8 @@ function parseArgument(value) {
   var text = String(value || "");
   var matches = text.match(/true|false/gi) || [];
   return {
-    hideFollow: matches.length > 0 ? matches[0].toLowerCase() === "true" : false,
-    filterHot: matches.length > 1 ? matches[1].toLowerCase() === "true" : false,
+    hideFollow: /hideFollow|hidePopularFollowButton/i.test(text) || (matches.length > 0 && matches[0].toLowerCase() === "true"),
+    filterHot: /filterHot|filterHotSearch/i.test(text) || (matches.length > 1 && matches[1].toLowerCase() === "true"),
   };
 }
 
