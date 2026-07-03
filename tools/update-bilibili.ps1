@@ -55,6 +55,7 @@ $arguments = @(
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplTWluZVBhZ2U9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeeyvueugOOAjOaIkeeahOmhtemdouOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
   (ConvertFrom-Base64Utf8 "Y3VzdG9taXplSG9tZUZlZWQ9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPei/h+a7pOOAjOmmlumhteaOqOiNkOa1geOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
   (ConvertFrom-Base64Utf8 "ZmlsdGVySG90U2VhcmNoPXN3aXRjaCwgdHJ1ZSwgZmFsc2UsIHRhZz3ov4fmu6TjgIzng63mkJwv54Ot6Zeo6K+d6aKY44CNLCBkZXNjPS0gdHJ1ZTog5byA5ZCvXG4tIGZhbHNlOiDlhbPpl60="),
+  (ConvertFrom-Base64Utf8 "aGlkZVBvcHVsYXJGb2xsb3dCdXR0b249c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPemakOiXj+eDremXqOmhteOAjOWFs+azqOaMiemSruOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet"),
   (ConvertFrom-Base64Utf8 "ZmlsdGVyU2VhcmNoU3VnZ2VzdD1zd2l0Y2gsIHRydWUsIGZhbHNlLCB0YWc96L+H5ruk44CM5pCc57Si5o6o6I2Q44CNLCBkZXNjPS0gdHJ1ZTog5byA5ZCvXG4tIGZhbHNlOiDlhbPpl60="),
   (ConvertFrom-Base64Utf8 "ZmlsdGVyRGVmYXVsdFNlYXJjaFdvcmQ9c3dpdGNoLCB0cnVlLCBmYWxzZSwgdGFnPeWxj+iUveOAjOm7mOiupOaQnOe0ouahhuWFs+mUruivjeOAjSwgZGVzYz0tIHRydWU6IOW8gOWQr1xuLSBmYWxzZTog5YWz6Zet")
 )
@@ -78,7 +79,7 @@ $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/sho
 $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
 $minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, enable={customizeMinePage}"
 $popularHideFollowTag = ConvertFrom-Base64Utf8 "56e76Zmk54Ot6Zeo6aG15YWz5rOo5oyJ6ZKu"
-$popularHideFollowScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHideFollowTag, enable={filterHotSearch}"
+$popularHideFollowScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=$repoRawBase/Scripts/bilibili/popular-hide-follow.js, requires-body=true, binary-body-mode=true, tag=$popularHideFollowTag, enable={hidePopularFollowButton}"
 
 $lines = $content -split "`n"
 $newLines = New-Object System.Collections.Generic.List[string]
