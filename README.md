@@ -2,8 +2,6 @@
 
 这个仓库用于保存个人维护的 Loon 插件和相关脚本。
 
-> GitHub README 会过滤 `loon://` 自定义协议，所以表格里的“一键导入”指向 `zwjtano.github.io` 跳转页；跳转页内部使用 Kelee Hub 同款格式：`loon://import?plugin=插件地址`。
-
 ## 插件列表
 
 | 图标 | 插件 | 原始链接 | 一键导入 |
