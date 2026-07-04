@@ -26,8 +26,8 @@
 
 上游作者：[RuCu6](https://github.com/RuCu6)、[kokoryh](https://github.com/kokoryh)、[可莉](https://gitlab.com/lodepuly/vpn_tool)。上游地址：[https://rucu6.pages.dev/Plugins/bilibili.lpx](https://rucu6.pages.dev/Plugins/bilibili.lpx)。
 
-- 保留热搜、热门话题，可过滤搜索建议
-- 默认隐藏热门页 UP 推荐卡的关注按钮
+- 过滤热搜、热门话题和搜索建议
+- 可单独隐藏热门页 UP 推荐卡的关注按钮
 - 屏蔽默认搜索框关键词
 - 支持自定义首页顶部频道标签
 - 支持隐藏首页游戏中心、底部发布、会员购等入口
