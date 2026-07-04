@@ -1,11 +1,9 @@
 /*
  * Bilibili Popular/Index
  * Remove the top-level UP recommendation card that contains the follow button.
- * The filterHotSearch argument additionally removes hot topic cards.
  */
 
 var body = toBytes(typeof $response.bodyBytes !== "undefined" ? $response.bodyBytes : $response.body);
-var filterHotSearch = getBooleanArgument();
 
 try {
   var patched = patchGrpcFrames(body);
@@ -99,7 +97,7 @@ function patchPopularIndex(bytes) {
     var value = bytes.slice(offset, offset + len.value);
     offset += len.value;
 
-    if (fieldNumber === 1 && shouldRemoveCard(value)) {
+    if (fieldNumber === 1 && isFollowCard(value)) {
       changed = true;
       continue;
     }
@@ -111,10 +109,6 @@ function patchPopularIndex(bytes) {
   return concatBytes(fields);
 }
 
-function shouldRemoveCard(value) {
-  return isFollowCard(value) || (filterHotSearch && isHotSearchCard(value));
-}
-
 function isFollowCard(value) {
   return (
     containsText(value, "rcmd_one_item") ||
@@ -122,36 +116,6 @@ function isFollowCard(value) {
     containsText(value, "up_follow") ||
     containsText(value, "up-follow")
   );
-}
-
-function isHotSearchCard(value) {
-  return (
-    containsText(value, "topic_list") ||
-    containsText(value, "topicList") ||
-    containsText(value, "small_cover_v5_ad") ||
-    containsText(value, "smallCoverV5Ad")
-  );
-}
-
-function getBooleanArgument() {
-  if (typeof $argument === "undefined") return false;
-
-  var value = String($argument).trim();
-  if (!value) return false;
-  if (value === "true" || value === "1") return true;
-  if (value === "false" || value === "0") return false;
-
-  if (value[0] === "[" || value[0] === "{") {
-    try {
-      var parsed = JSON.parse(value);
-      if (parsed instanceof Array) return parsed[0] === true || parsed[0] === "true";
-      if (parsed && typeof parsed === "object") {
-        return parsed.filterHotSearch === true || parsed.filterHotSearch === "true";
-      }
-    } catch (e) {}
-  }
-
-  return false;
 }
 
 function readVarint(bytes, offset) {
