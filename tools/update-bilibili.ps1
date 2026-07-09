@@ -22,15 +22,65 @@ function Add-EnableFlag {
   return "$lineWithoutEnable$Separator" + "enable={$Flag}"
 }
 
+function Get-SourceContent {
+  param([string]$Url)
+
+  $headers = @{
+    "User-Agent" = "zwjtano-loon-sync"
+    "Accept" = "application/vnd.github+json,text/plain,*/*"
+  }
+  $webClient = [System.Net.WebClient]::new()
+  $webClient.Encoding = [System.Text.Encoding]::UTF8
+  foreach ($key in $headers.Keys) {
+    $webClient.Headers.Set($key, $headers[$key])
+  }
+  $text = $webClient.DownloadString($Url) -replace "`r`n", "`n"
+
+  if ($Url -like "https://api.github.com/repos/*/contents/*") {
+    $json = $text | ConvertFrom-Json
+    if (-not $json.content) {
+      throw "GitHub API response does not contain file content: $Url"
+    }
+    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($json.content -replace "\s", ""))) -replace "`r`n", "`n"
+  }
+
+  return $text
+}
+
+function Assert-LoonPlugin {
+  param([string]$Content)
+
+  if (-not $Content.TrimStart().StartsWith("#!name=") -or -not $Content.Contains("[Script]")) {
+    $preview = $Content.Substring(0, [Math]::Min(160, $Content.Length)).Replace("`n", "\n")
+    throw "Downloaded content is not a Loon plugin. Refusing to publish invalid content. Preview: $preview"
+  }
+}
+
+function Assert-PatchedPlugin {
+  param([string]$Content)
+
+  $requiredMarkers = @(
+    "Scripts/bilibili/home-tabs.js",
+    "Scripts/bilibili/mine.js",
+    "Scripts/bilibili/search-square.js",
+    "Scripts/bilibili/default-search-word.js"
+  )
+
+  foreach ($marker in $requiredMarkers) {
+    if (-not $Content.Contains($marker)) {
+      throw "Generated plugin is missing required local customization: $marker"
+    }
+  }
+}
+
 $targetFullPath = Join-Path (Get-Location) $TargetPath
 $targetDir = Split-Path -Parent $targetFullPath
 if (-not (Test-Path $targetDir)) {
   New-Item -ItemType Directory -Path $targetDir | Out-Null
 }
 
-$webClient = [System.Net.WebClient]::new()
-$sourceBytes = $webClient.DownloadData($SourceUrl)
-$content = [System.Text.Encoding]::UTF8.GetString($sourceBytes) -replace "`r`n", "`n"
+$content = Get-SourceContent -Url $SourceUrl
+Assert-LoonPlugin -Content $content
 $content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
   param($Match)
 
@@ -134,6 +184,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 }
 
 $content = ($newLines -join "`n").TrimEnd() + "`n"
+Assert-PatchedPlugin -Content $content
 [System.IO.File]::WriteAllText($targetFullPath, $content, [System.Text.UTF8Encoding]::new($false))
 
 Write-Host "Updated $TargetPath from $SourceUrl and reapplied local Loon switches."
