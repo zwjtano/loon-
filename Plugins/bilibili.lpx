@@ -16,6 +16,7 @@ hideHomeBottomMall=switch, true, false, tag=隐藏底栏「会员购」, desc=- 
 customizePgcPage=switch, true, false, tag=精简「观影页」, desc=- true: 开启\n- false: 关闭
 customizeMinePage=switch, true, false, tag=精简「我的页面」, desc=- true: 开启\n- false: 关闭
 customizeHomeFeed=switch, true, false, tag=过滤「首页推荐流」, desc=- true: 开启\n- false: 关闭
+filterVerticalVideo=switch, true, false, tag=过滤「竖屏视频」, desc=- true: 开启\n- false: 关闭
 filterHotSearch=switch, true, false, tag=过滤「热搜/热门话题」, desc=- true: 开启\n- false: 关闭
 filterSearchSuggest=switch, true, false, tag=过滤「搜索推荐」, desc=- true: 开启\n- false: 关闭
 filterDefaultSearchWord=switch, true, false, tag=屏蔽「默认搜索框关键词」, desc=- true: 开启\n- false: 关闭
@@ -129,7 +130,7 @@ http-response ^https:\/\/api\.bilibili\.com\/pgc\/page\/(?:bangumi|cinema\/tab) 
 http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/splash script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=移除开屏广告
 http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/home-tabs.js, requires-body=true, tag=自定义首页顶部标签, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]
 http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/mine.js, requires-body=true, tag=精简我的页面, enable={customizeMinePage}
-http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=https://rucu6.pages.dev/Scripts/bilibili/json.js, requires-body=true, tag=移除首页推荐广告, enable={customizeHomeFeed}
+http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=https://raw.githubusercontent.com/zwjtano/loon-/master/Scripts/bilibili/feed-index.js, requires-body=true, tag=过滤首页推荐流, argument=[{customizeHomeFeed},{filterVerticalVideo}]
 
 [MITM]
 hostname=*live.bilibili.com, *api.biligame.com, ap?.bilibili.com, grpc.biliapi.net, m.bilibili.com, manga.bilibili.com, www.bilibili.com
