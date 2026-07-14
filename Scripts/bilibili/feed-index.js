@@ -1,7 +1,7 @@
 function parseArguments() {
   const defaults = {
     customizeHomeFeed: true,
-    filterVerticalVideo: true,
+    filterVerticalVideo: false,
   };
 
   if (typeof $argument === "undefined") return defaults;
@@ -42,9 +42,9 @@ function isEnabled(value) {
   return String(value).toLowerCase() !== "false";
 }
 
-function hasValue(value, expectedValues) {
+function matchesValue(value, expectedValues) {
   const normalized = String(value || "").toLowerCase();
-  return expectedValues.some((expected) => normalized === expected || normalized.includes(expected));
+  return expectedValues.some((expected) => normalized === expected);
 }
 
 function isAdItem(item) {
@@ -69,14 +69,11 @@ function isAdItem(item) {
 }
 
 function isVerticalVideo(item) {
-  const verticalValues = ["vertical_av", "story", "ugc-video-detail-vertical"];
+  const verticalValues = ["vertical_av", "story"];
 
   return (
-    hasValue(item.goto, verticalValues) ||
-    hasValue(item.card_goto, verticalValues) ||
-    hasValue(item.uri, verticalValues) ||
-    hasValue(item.spmid, verticalValues) ||
-    Boolean(item.ff_cover)
+    matchesValue(item.goto, verticalValues) ||
+    matchesValue(item.card_goto, verticalValues)
   );
 }
 
