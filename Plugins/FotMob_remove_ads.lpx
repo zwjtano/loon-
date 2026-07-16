@@ -1,5 +1,5 @@
-#!name=FotMob 去广告
-#!desc=清空 FotMob 自家 house ads，拦截 InnerActive、Nimbus、Bannerflow / Creatopy、Stake、DoubleClick 等广告链路。
+#!name=FotMob 去广告 v1.0.0
+#!desc=移除 FotMob 首页、赛事页和推荐流中的 EA SPORTS FC、Stake、House Ads 等广告。
 #!author=Codex & zwjtano
 #!category=zwjtano
 #!homepage=https://github.com/zwjtano/loon-
@@ -8,90 +8,83 @@
 #!loon_version=3.4.0
 
 [Rule]
-# FotMob 广告 SDK / 竞价 / 素材域名
-DOMAIN-SUFFIX,inner-active.mobi,REJECT
-DOMAIN-SUFFIX,adsbynimbus.com,REJECT
-DOMAIN-SUFFIX,dsp-api.moloco.com,REJECT
-DOMAIN-SUFFIX,ads.vungle.com,REJECT
-DOMAIN-SUFFIX,appsflyersdk.com,REJECT
-DOMAIN-SUFFIX,amazon-adsystem.com,REJECT
-DOMAIN-SUFFIX,advertising.a2z.com,REJECT
-DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
-DOMAIN-SUFFIX,doubleclick.net,REJECT
-DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
-DOMAIN-SUFFIX,googlesyndication.com,REJECT
-DOMAIN-SUFFIX,googleadservices.com,REJECT
-DOMAIN-SUFFIX,gstaticadssl.l.google.com,REJECT
-DOMAIN-SUFFIX,bannerflow.net,REJECT
-DOMAIN-SUFFIX,creatopy.net,REJECT
-DOMAIN-SUFFIX,stake.ac,REJECT
-DOMAIN-SUFFIX,insightexpressai.com,REJECT
-DOMAIN-SUFFIX,doubleverify.com,REJECT
+# FotMob 自家广告 / 活动素材
+URL-REGEX,^https://pub\.fotmob\.com/prod/pub/(houseads|odds|nextmatch).*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/(hero_campaigns|image_resources/hero-campaigns|image_resources/house-ads)/.*,REJECT
+DOMAIN,pub.fotmob.com,REJECT
+
+# EA / Stake 等 HTML5 创意广告链路
 DOMAIN,c.bannerflow.net,REJECT
-DOMAIN,cdn2.inner-active.mobi,REJECT
 DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
-DOMAIN,secure.insightexpressai.com,REJECT
-DOMAIN,tpsc-ae1.doubleverify.com,REJECT
+URL-REGEX,^https://c\.bannerflow\.net/.*,REJECT
+URL-REGEX,^https://live-tag\.creatopy\.net/.*,REJECT
+URL-REGEX,^https://stake\.ac/.*,REJECT
+
+# InnerActive / Nimbus / 广告竞价 SDK
+DOMAIN-SUFFIX,inner-active.mobi,REJECT
+DOMAIN,cdn2.inner-active.mobi,REJECT
+DOMAIN-SUFFIX,adsbynimbus.com,REJECT
 DOMAIN,fotmobas-fotmobsoccerlivescores.adsbynimbus.com,REJECT
-DOMAIN,adclick.g.doubleclick-cn.net,REJECT
+DOMAIN-SUFFIX,dsp-api.moloco.com,REJECT
+DOMAIN-SUFFIX,ads.vungle.com,REJECT
+URL-REGEX,^https://cdn2\.inner-active\.mobi/.*,REJECT
+URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
+
+# Google / DoubleVerify / 追踪
+DOMAIN-SUFFIX,doubleclick.net,REJECT
+DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
+DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
+DOMAIN-SUFFIX,googleadservices.com,REJECT
 DOMAIN,ad.doubleclick.net,REJECT
-DOMAIN,cdn.doubleverify.com,REJECT
+DOMAIN,adclick.g.doubleclick-cn.net,REJECT
 DOMAIN,pubads.g.doubleclick.net,REJECT
 DOMAIN,googleads.g.doubleclick.net,REJECT
 DOMAIN,securepubads.g.doubleclick.net,REJECT
 DOMAIN,pagead2.googlesyndication.com,REJECT
 DOMAIN,tpc.googlesyndication.com,REJECT
-
-# Loon 兜底：对广告 URL 直接拒绝
-URL-REGEX,^https://c\.bannerflow\.net/.*,REJECT
-URL-REGEX,^https://cdn2\.inner-active\.mobi/.*,REJECT
-URL-REGEX,^https://live-tag\.creatopy\.net/.*,REJECT
-URL-REGEX,^https://stake\.ac/.*,REJECT
-URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
-URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
-URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
-URL-REGEX,^https://images\.fotmob\.com/(image_resources/house-ads|hero_campaigns|image_resources/hero-campaigns)/.*,REJECT
-URL-REGEX,^https://images\.fotmob\.com/hero_campaigns/.*,REJECT
-URL-REGEX,^https://images\.fotmob\.com/image_resources/hero-campaigns/.*,REJECT
-URL-REGEX,^https://images\.fotmob\.com/.*campaign.*,REJECT
-URL-REGEX,^https://images\.fotmob\.com/.*house-ads.*,REJECT
-URL-REGEX,^https://pubads\.g\.doubleclick\.net/.*,REJECT
-URL-REGEX,^https://adclick\.g\.doubleclick-cn\.net/.*,REJECT
-URL-REGEX,^https://ad\.doubleclick\.net/.*,REJECT
-URL-REGEX,^https://cdn\.doubleverify\.com/.*,REJECT
+DOMAIN-SUFFIX,doubleverify.com,REJECT
+DOMAIN,cdn.doubleverify.com,REJECT
+DOMAIN,tpsc-ae1.doubleverify.com,REJECT
+DOMAIN-SUFFIX,insightexpressai.com,REJECT
+DOMAIN,secure.insightexpressai.com,REJECT
 URL-REGEX,^https://apigw\.fotmob\.com/imp.*,REJECT
+URL-REGEX,^https://ad\.doubleclick\.net/.*,REJECT
+URL-REGEX,^https://adclick\.g\.doubleclick-cn\.net/.*,REJECT
+URL-REGEX,^https://pubads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://googleads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://securepubads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://pagead2\.googlesyndication\.com/.*,REJECT
 URL-REGEX,^https://tpc\.googlesyndication\.com/.*,REJECT
+URL-REGEX,^https://cdn\.doubleverify\.com/.*,REJECT
+URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
+URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
 
 [Rewrite]
-# FotMob house ads 返回空数组
-^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads.* mock-response-body data-type=application/json status-code=200 data="[]"
+# 让 FotMob 自家广告列表直接返回空数组
+^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads.* response-body-json-jq '[]'
 
-# 广告图片 / 活动页 / 创意素材
-^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
+# 拦截已抓到的广告 HTML / 图片 / SDK 素材
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 ^https:\/\/images\.fotmob\.com\/image_resources\/hero-campaigns\/.* reject
-^https:\/\/images\.fotmob\.com\/.*campaign.* reject
-^https:\/\/images\.fotmob\.com\/.*house-ads.* reject
+^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/c\.bannerflow\.net\/.* reject
-^https:\/\/cdn2\.inner-active\.mobi\/.* reject
 ^https:\/\/live-tag\.creatopy\.net\/.* reject
-^https:\/\/stake\.ac\/.* reject
+^https:\/\/cdn2\.inner-active\.mobi\/.* reject
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
-^https:\/\/secure\.insightexpressai\.com\/.* reject
-^https:\/\/tpsc-ae1\.doubleverify\.com\/.* reject
-^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
-^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
-^https:\/\/ad\.doubleclick\.net\/.* reject
-^https:\/\/cdn\.doubleverify\.com\/.* reject
+^https:\/\/stake\.ac\/.* reject
 ^https:\/\/apigw\.fotmob\.com\/imp.* reject
+^https:\/\/secure\.insightexpressai\.com\/.* reject
+^https:\/\/cdn\.doubleverify\.com\/.* reject
+^https:\/\/tpsc-ae1\.doubleverify\.com\/.* reject
+^https:\/\/ad\.doubleclick\.net\/.* reject
+^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/googleads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/securepubads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/pagead2\.googlesyndication\.com\/.* reject
 ^https:\/\/tpc\.googlesyndication\.com\/.* reject
 
 [MITM]
-hostname = %APPEND% pub.fotmob.com, images.fotmob.com, c.bannerflow.net, cdn2.inner-active.mobi, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, tpsc-ae1.doubleverify.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, pubads.g.doubleclick.net, adclick.g.doubleclick-cn.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com, ad.doubleclick.net, cdn.doubleverify.com, apigw.fotmob.com
+hostname = %APPEND% pub.fotmob.com, images.fotmob.com, apigw.fotmob.com, c.bannerflow.net, live-tag.creatopy.net, cdn2.inner-active.mobi, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, stake.ac, secure.insightexpressai.com, cdn.doubleverify.com, tpsc-ae1.doubleverify.com, ad.doubleclick.net, adclick.g.doubleclick-cn.net, pubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com
