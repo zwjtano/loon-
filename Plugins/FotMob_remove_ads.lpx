@@ -1,5 +1,5 @@
-#!name=FotMob å»å¹¿å v1.0.0
-#!desc=ç§»é¤ FotMob é¦é¡µãèµäºé¡µåæ¨èæµä¸­ç EA SPORTS FCãStakeãHouse Ads ç­å¹¿åã
+#!name=FotMob 去广告 v1.0.0
+#!desc=移除 FotMob 首页、赛事页和推荐流中的 EA SPORTS FC、Stake、House Ads 等广告。
 #!author=Codex & zwjtano
 #!category=zwjtano
 #!homepage=https://github.com/zwjtano/loon-
@@ -8,20 +8,15 @@
 #!loon_version=3.4.0
 
 [Rule]
-# FotMob èªå®¶å¹¿å / æ´»å¨ç´ æ
 URL-REGEX,^https://pub\.fotmob\.com/prod/pub/(houseads|odds|nextmatch).*,REJECT
 URL-REGEX,^https://images\.fotmob\.com/(hero_campaigns|image_resources/hero-campaigns|image_resources/house-ads)/.*,REJECT
 DOMAIN,pub.fotmob.com,REJECT
-
-# EA / Stake ç­ HTML5 åæå¹¿åé¾è·¯
 DOMAIN,c.bannerflow.net,REJECT
 DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
 URL-REGEX,^https://c\.bannerflow\.net/.*,REJECT
 URL-REGEX,^https://live-tag\.creatopy\.net/.*,REJECT
 URL-REGEX,^https://stake\.ac/.*,REJECT
-
-# InnerActive / Nimbus / å¹¿åç«ä»· SDK
 DOMAIN-SUFFIX,inner-active.mobi,REJECT
 DOMAIN,cdn2.inner-active.mobi,REJECT
 DOMAIN-SUFFIX,adsbynimbus.com,REJECT
@@ -30,8 +25,6 @@ DOMAIN-SUFFIX,dsp-api.moloco.com,REJECT
 DOMAIN-SUFFIX,ads.vungle.com,REJECT
 URL-REGEX,^https://cdn2\.inner-active\.mobi/.*,REJECT
 URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
-
-# Google / DoubleVerify / è¿½è¸ª
 DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
@@ -62,10 +55,7 @@ URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
 URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
 
 [Rewrite]
-# è®© FotMob èªå®¶å¹¿ååè¡¨ç´æ¥è¿åç©ºæ°ç»
 ^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads.* response-body-json-jq '[]'
-
-# æ¦æªå·²æå°çå¹¿å HTML / å¾ç / SDK ç´ æ
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 ^https:\/\/images\.fotmob\.com\/image_resources\/hero-campaigns\/.* reject
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
