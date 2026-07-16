@@ -13,10 +13,10 @@
 
 ### FotMob 去广告
 
-用于净化 FotMob 的信息流和比赛页广告，主要处理首页横幅、信息流大图广告、房子广告和常见广告 SDK 请求。
+用于净化 FotMob 的信息流和比赛页广告，主要处理首页横幅、信息流大图广告、房子广告、Bannerflow 创意广告和常见广告 SDK 请求。
 
 - 拦截 FotMob 自有广告图片与广告配置
-- 拦截 Google Ads、Amazon Ads、Moloco、Vungle、Nimbus 等广告请求
+- 拦截 Google Ads、Amazon Ads、Moloco、Vungle、Nimbus、Bannerflow、InsightExpress 等广告请求
 - 通过 Rewrite 处理部分广告接口响应
 - 保留比赛数据、球队 Logo、赛程等正常内容
 
