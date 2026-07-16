@@ -21,6 +21,10 @@ DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
 DOMAIN-SUFFIX,bannerflow.net,REJECT
 DOMAIN-SUFFIX,insightexpressai.com,REJECT
+DOMAIN,c.bannerflow.net,REJECT
+DOMAIN,secure.insightexpressai.com, adclick.g.doubleclick-cn.net,REJECT
+DOMAIN,adclick.g.doubleclick-cn.net,REJECT
+DOMAIN-SUFFIX,doubleclick.net,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求 house-ads 图片
@@ -30,9 +34,14 @@ DOMAIN-SUFFIX,insightexpressai.com,REJECT
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 
+# Bannerflow / EA FC / Stake ???????
+^https:\/\/c\.bannerflow\.net\/.* reject
+^https:\/\/secure\.insightexpressai\.com\/.* reject
+^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+
 # HAR 中出现的广告竞价 / 同步接口
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
 ^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
 
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com
+hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com, adclick.g.doubleclick-cn.net
