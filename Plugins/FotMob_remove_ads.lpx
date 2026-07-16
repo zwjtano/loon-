@@ -50,6 +50,8 @@ URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
 URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
 URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
 URL-REGEX,^https://images\.fotmob\.com/(image_resources/house-ads|hero_campaigns|image_resources/hero-campaigns)/.*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/.*campaign.*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/.*house-ads.*,REJECT
 URL-REGEX,^https://pubads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://adclick\.g\.doubleclick-cn\.net/.*,REJECT
 URL-REGEX,^https://googleads\.g\.doubleclick\.net/.*,REJECT
@@ -65,6 +67,8 @@ URL-REGEX,^https://tpc\.googlesyndication\.com/.*,REJECT
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 ^https:\/\/images\.fotmob\.com\/image_resources\/hero-campaigns\/.* reject
+^https:\/\/images\.fotmob\.com\/.*campaign.* reject
+^https:\/\/images\.fotmob\.com\/.*house-ads.* reject
 ^https:\/\/c\.bannerflow\.net\/.* reject
 ^https:\/\/cdn2\.inner-active\.mobi\/.* reject
 ^https:\/\/live-tag\.creatopy\.net\/.* reject
