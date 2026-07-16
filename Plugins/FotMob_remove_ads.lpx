@@ -17,24 +17,24 @@ DOMAIN-SUFFIX,appsflyersdk.com,REJECT
 DOMAIN-SUFFIX,amazon-adsystem.com,REJECT
 DOMAIN-SUFFIX,advertising.a2z.com,REJECT
 DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
+DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
 DOMAIN-SUFFIX,bannerflow.net,REJECT
 DOMAIN-SUFFIX,insightexpressai.com,REJECT
 DOMAIN,c.bannerflow.net,REJECT
-DOMAIN,secure.insightexpressai.com, adclick.g.doubleclick-cn.net,REJECT
+DOMAIN,secure.insightexpressai.com,REJECT
 DOMAIN,adclick.g.doubleclick-cn.net,REJECT
-DOMAIN-SUFFIX,doubleclick.net,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求 house-ads 图片
 ^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads response-body-json-jq '[]'
 
-# 自家广告图片兜底拦截，不影响球队 Logo 等正常图片
+# 自家广告图片 / 活动页兜底拦截，不影响球队 Logo 等正常图片
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 
-# Bannerflow / EA FC / Stake ???????
+# Bannerflow / EA FC / Stake 等创意广告链路
 ^https:\/\/c\.bannerflow\.net\/.* reject
 ^https:\/\/secure\.insightexpressai\.com\/.* reject
 ^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
