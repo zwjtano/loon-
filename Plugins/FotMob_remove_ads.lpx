@@ -20,6 +20,8 @@ DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
 DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,googleadservices.com,REJECT
+DOMAIN-SUFFIX,gstaticadssl.l.google.com,REJECT
 DOMAIN-SUFFIX,bannerflow.net,REJECT
 DOMAIN-SUFFIX,creatopy.net,REJECT
 DOMAIN-SUFFIX,stake.ac,REJECT
@@ -29,13 +31,11 @@ DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
 DOMAIN,secure.insightexpressai.com,REJECT
 DOMAIN,adclick.g.doubleclick-cn.net,REJECT
-DOMAIN,pubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com,REJECT
+DOMAIN,pubads.g.doubleclick.net,REJECT
 DOMAIN,googleads.g.doubleclick.net,REJECT
-DOMAIN,securepubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com,REJECT
+DOMAIN,securepubads.g.doubleclick.net,REJECT
 DOMAIN,pagead2.googlesyndication.com,REJECT
 DOMAIN,tpc.googlesyndication.com,REJECT
-DOMAIN-SUFFIX,googleadservices.com,REJECT
-DOMAIN-SUFFIX,gstaticadssl.l.google.com,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求广告素材
