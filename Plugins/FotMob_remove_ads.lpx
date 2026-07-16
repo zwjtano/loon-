@@ -35,6 +35,8 @@ DOMAIN,secure.insightexpressai.com,REJECT
 DOMAIN,tpsc-ae1.doubleverify.com,REJECT
 DOMAIN,fotmobas-fotmobsoccerlivescores.adsbynimbus.com,REJECT
 DOMAIN,adclick.g.doubleclick-cn.net,REJECT
+DOMAIN,ad.doubleclick.net,REJECT
+DOMAIN,cdn.doubleverify.com,REJECT
 DOMAIN,pubads.g.doubleclick.net,REJECT
 DOMAIN,googleads.g.doubleclick.net,REJECT
 DOMAIN,securepubads.g.doubleclick.net,REJECT
@@ -50,10 +52,15 @@ URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
 URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
 URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
 URL-REGEX,^https://images\.fotmob\.com/(image_resources/house-ads|hero_campaigns|image_resources/hero-campaigns)/.*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/hero_campaigns/.*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/image_resources/hero-campaigns/.*,REJECT
 URL-REGEX,^https://images\.fotmob\.com/.*campaign.*,REJECT
 URL-REGEX,^https://images\.fotmob\.com/.*house-ads.*,REJECT
 URL-REGEX,^https://pubads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://adclick\.g\.doubleclick-cn\.net/.*,REJECT
+URL-REGEX,^https://ad\.doubleclick\.net/.*,REJECT
+URL-REGEX,^https://cdn\.doubleverify\.com/.*,REJECT
+URL-REGEX,^https://apigw\.fotmob\.com/imp.*,REJECT
 URL-REGEX,^https://googleads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://securepubads\.g\.doubleclick\.net/.*,REJECT
 URL-REGEX,^https://pagead2\.googlesyndication\.com/.*,REJECT
@@ -78,10 +85,13 @@ URL-REGEX,^https://tpc\.googlesyndication\.com/.*,REJECT
 ^https:\/\/tpsc-ae1\.doubleverify\.com\/.* reject
 ^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+^https:\/\/ad\.doubleclick\.net\/.* reject
+^https:\/\/cdn\.doubleverify\.com\/.* reject
+^https:\/\/apigw\.fotmob\.com\/imp.* reject
 ^https:\/\/googleads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/securepubads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/pagead2\.googlesyndication\.com\/.* reject
 ^https:\/\/tpc\.googlesyndication\.com\/.* reject
 
 [MITM]
-hostname = %APPEND% pub.fotmob.com, images.fotmob.com, c.bannerflow.net, cdn2.inner-active.mobi, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, tpsc-ae1.doubleverify.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, pubads.g.doubleclick.net, adclick.g.doubleclick-cn.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com
+hostname = %APPEND% pub.fotmob.com, images.fotmob.com, c.bannerflow.net, cdn2.inner-active.mobi, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, tpsc-ae1.doubleverify.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, pubads.g.doubleclick.net, adclick.g.doubleclick-cn.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com, ad.doubleclick.net, cdn.doubleverify.com, apigw.fotmob.com
