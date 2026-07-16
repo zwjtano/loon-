@@ -1,5 +1,5 @@
 #!name=FotMob 去广告
-#!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、Bannerflow 创意广告、广告图片与广告竞价接口。
+#!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、Bannerflow / Creatopy 创意广告、广告图片与广告竞价接口。
 #!author=Codex & zwjtano
 #!category=zwjtano
 #!homepage=https://github.com/zwjtano/loon-
@@ -28,26 +28,28 @@ DOMAIN,c.bannerflow.net,REJECT
 DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
 DOMAIN,secure.insightexpressai.com,REJECT
-DOMAIN,adclick.g.doubleclick-cn.net, live-tag.creatopy.net, stake.ac,REJECT
+DOMAIN,adclick.g.doubleclick-cn.net,REJECT
+DOMAIN,pubads.g.doubleclick.net,REJECT
 
 [Rewrite]
-# 自家广告列表：返回空数组，避免继续请求 house-ads 图片
-^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads response-body-json-jq '[]'
+# 自家广告列表：返回空数组，避免继续请求广告素材
+^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads mock-response-body data-type=application/json status-code=200 data="[]"
 
 # 自家广告图片 / 活动页兜底拦截，不影响球队 Logo 等正常图片
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 
-# Bannerflow / EA FC / Stake 等创意广告链路
+# Bannerflow / Creatopy / EA FC / Stake 等创意广告链路
 ^https:\/\/c\.bannerflow\.net\/.* reject
-^https:\/\/secure\.insightexpressai\.com\/.* reject
-^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
 ^https:\/\/live-tag\.creatopy\.net\/.* reject
-^https:\/\/stake\.ac\/promotions\/.* reject
+^https:\/\/secure\.insightexpressai\.com\/.* reject
+^https:\/\/stake\.ac\/.* reject
+^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
 
 # HAR 中出现的广告竞价 / 同步接口
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
 ^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
 
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com, adclick.g.doubleclick-cn.net, live-tag.creatopy.net, stake.ac
+hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, adclick.g.doubleclick-cn.net, pubads.g.doubleclick.net
