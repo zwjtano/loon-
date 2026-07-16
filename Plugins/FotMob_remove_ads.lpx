@@ -21,10 +21,14 @@ DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
 DOMAIN-SUFFIX,bannerflow.net,REJECT
+DOMAIN-SUFFIX,creatopy.net,REJECT
+DOMAIN-SUFFIX,stake.ac,REJECT
 DOMAIN-SUFFIX,insightexpressai.com,REJECT
 DOMAIN,c.bannerflow.net,REJECT
+DOMAIN,live-tag.creatopy.net,REJECT
+DOMAIN,stake.ac,REJECT
 DOMAIN,secure.insightexpressai.com,REJECT
-DOMAIN,adclick.g.doubleclick-cn.net,REJECT
+DOMAIN,adclick.g.doubleclick-cn.net, live-tag.creatopy.net, stake.ac,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求 house-ads 图片
@@ -38,10 +42,12 @@ DOMAIN,adclick.g.doubleclick-cn.net,REJECT
 ^https:\/\/c\.bannerflow\.net\/.* reject
 ^https:\/\/secure\.insightexpressai\.com\/.* reject
 ^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+^https:\/\/live-tag\.creatopy\.net\/.* reject
+^https:\/\/stake\.ac\/promotions\/.* reject
 
 # HAR 中出现的广告竞价 / 同步接口
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
 ^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
 
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com, adclick.g.doubleclick-cn.net
+hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com, adclick.g.doubleclick-cn.net, live-tag.creatopy.net, stake.ac
