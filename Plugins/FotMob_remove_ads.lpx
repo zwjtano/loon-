@@ -29,7 +29,13 @@ DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
 DOMAIN,secure.insightexpressai.com,REJECT
 DOMAIN,adclick.g.doubleclick-cn.net,REJECT
-DOMAIN,pubads.g.doubleclick.net,REJECT
+DOMAIN,pubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com,REJECT
+DOMAIN,googleads.g.doubleclick.net,REJECT
+DOMAIN,securepubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com,REJECT
+DOMAIN,pagead2.googlesyndication.com,REJECT
+DOMAIN,tpc.googlesyndication.com,REJECT
+DOMAIN-SUFFIX,googleadservices.com,REJECT
+DOMAIN-SUFFIX,gstaticadssl.l.google.com,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求广告素材
@@ -46,10 +52,14 @@ DOMAIN,pubads.g.doubleclick.net,REJECT
 ^https:\/\/stake\.ac\/.* reject
 ^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
 ^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
+^https:\/\/googleads\.g\.doubleclick\.net\/.* reject
+^https:\/\/securepubads\.g\.doubleclick\.net\/.* reject
+^https:\/\/pagead2\.googlesyndication\.com\/.* reject
+^https:\/\/tpc\.googlesyndication\.com\/.* reject
 
 # HAR 中出现的广告竞价 / 同步接口
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
 ^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
 
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, adclick.g.doubleclick-cn.net, pubads.g.doubleclick.net
+hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, adclick.g.doubleclick-cn.net, pubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com
