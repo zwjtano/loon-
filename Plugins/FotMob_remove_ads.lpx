@@ -1,5 +1,5 @@
 #!name=FotMob 去广告
-#!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、Bannerflow / Creatopy 创意广告、广告图片与广告竞价接口。
+#!desc=清空 FotMob 自家 house ads，拦截 InnerActive、Nimbus、Bannerflow / Creatopy、Stake、DoubleClick 等广告链路。
 #!author=Codex & zwjtano
 #!category=zwjtano
 #!homepage=https://github.com/zwjtano/loon-
@@ -8,7 +8,7 @@
 #!loon_version=3.4.0
 
 [Rule]
-# FotMob 广告 SDK / 竞价 / 归因
+# FotMob 广告 SDK / 竞价 / 素材域名
 DOMAIN-SUFFIX,inner-active.mobi,REJECT
 DOMAIN-SUFFIX,adsbynimbus.com,REJECT
 DOMAIN-SUFFIX,dsp-api.moloco.com,REJECT
@@ -26,10 +26,14 @@ DOMAIN-SUFFIX,bannerflow.net,REJECT
 DOMAIN-SUFFIX,creatopy.net,REJECT
 DOMAIN-SUFFIX,stake.ac,REJECT
 DOMAIN-SUFFIX,insightexpressai.com,REJECT
+DOMAIN-SUFFIX,doubleverify.com,REJECT
 DOMAIN,c.bannerflow.net,REJECT
+DOMAIN,cdn2.inner-active.mobi,REJECT
 DOMAIN,live-tag.creatopy.net,REJECT
 DOMAIN,stake.ac,REJECT
 DOMAIN,secure.insightexpressai.com,REJECT
+DOMAIN,tpsc-ae1.doubleverify.com,REJECT
+DOMAIN,fotmobas-fotmobsoccerlivescores.adsbynimbus.com,REJECT
 DOMAIN,adclick.g.doubleclick-cn.net,REJECT
 DOMAIN,pubads.g.doubleclick.net,REJECT
 DOMAIN,googleads.g.doubleclick.net,REJECT
@@ -37,29 +41,43 @@ DOMAIN,securepubads.g.doubleclick.net,REJECT
 DOMAIN,pagead2.googlesyndication.com,REJECT
 DOMAIN,tpc.googlesyndication.com,REJECT
 
-[Rewrite]
-# 自家广告列表：返回空数组，避免继续请求广告素材
-^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads mock-response-body data-type=application/json status-code=200 data="[]"
+# Loon 兜底：对广告 URL 直接拒绝
+URL-REGEX,^https://c\.bannerflow\.net/.*,REJECT
+URL-REGEX,^https://cdn2\.inner-active\.mobi/.*,REJECT
+URL-REGEX,^https://live-tag\.creatopy\.net/.*,REJECT
+URL-REGEX,^https://stake\.ac/.*,REJECT
+URL-REGEX,^https://fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com/.*,REJECT
+URL-REGEX,^https://secure\.insightexpressai\.com/.*,REJECT
+URL-REGEX,^https://tpsc-ae1\.doubleverify\.com/.*,REJECT
+URL-REGEX,^https://images\.fotmob\.com/(image_resources/house-ads|hero_campaigns|image_resources/hero-campaigns)/.*,REJECT
+URL-REGEX,^https://pubads\.g\.doubleclick\.net/.*,REJECT
+URL-REGEX,^https://adclick\.g\.doubleclick-cn\.net/.*,REJECT
+URL-REGEX,^https://googleads\.g\.doubleclick\.net/.*,REJECT
+URL-REGEX,^https://securepubads\.g\.doubleclick\.net/.*,REJECT
+URL-REGEX,^https://pagead2\.googlesyndication\.com/.*,REJECT
+URL-REGEX,^https://tpc\.googlesyndication\.com/.*,REJECT
 
-# 自家广告图片 / 活动页兜底拦截，不影响球队 Logo 等正常图片
+[Rewrite]
+# FotMob house ads 返回空数组
+^https:\/\/pub\.fotmob\.com\/prod\/pub\/houseads.* mock-response-body data-type=application/json status-code=200 data="[]"
+
+# 广告图片 / 活动页 / 创意素材
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
 ^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
-
-# Bannerflow / Creatopy / EA FC / Stake 等创意广告链路
+^https:\/\/images\.fotmob\.com\/image_resources\/hero-campaigns\/.* reject
 ^https:\/\/c\.bannerflow\.net\/.* reject
+^https:\/\/cdn2\.inner-active\.mobi\/.* reject
 ^https:\/\/live-tag\.creatopy\.net\/.* reject
-^https:\/\/secure\.insightexpressai\.com\/.* reject
 ^https:\/\/stake\.ac\/.* reject
-^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
+^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
+^https:\/\/secure\.insightexpressai\.com\/.* reject
+^https:\/\/tpsc-ae1\.doubleverify\.com\/.* reject
 ^https:\/\/pubads\.g\.doubleclick\.net\/.* reject
+^https:\/\/adclick\.g\.doubleclick-cn\.net\/.* reject
 ^https:\/\/googleads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/securepubads\.g\.doubleclick\.net\/.* reject
 ^https:\/\/pagead2\.googlesyndication\.com\/.* reject
 ^https:\/\/tpc\.googlesyndication\.com\/.* reject
 
-# HAR 中出现的广告竞价 / 同步接口
-^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
-^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
-
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, adclick.g.doubleclick-cn.net, pubads.g.doubleclick.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com
+hostname = %APPEND% pub.fotmob.com, images.fotmob.com, c.bannerflow.net, cdn2.inner-active.mobi, live-tag.creatopy.net, secure.insightexpressai.com, stake.ac, tpsc-ae1.doubleverify.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, pubads.g.doubleclick.net, adclick.g.doubleclick-cn.net, googleads.g.doubleclick.net, securepubads.g.doubleclick.net, pagead2.googlesyndication.com, tpc.googlesyndication.com
