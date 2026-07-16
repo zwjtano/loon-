@@ -1,10 +1,10 @@
 #!name=FotMob 去广告
-#!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、广告图片与广告竞价接口。
+#!desc=清空 FotMob 自家 house ads，并拦截抓包识别到的广告 SDK、Bannerflow 创意广告、广告图片与广告竞价接口。
 #!author=Codex & zwjtano
 #!category=zwjtano
 #!homepage=https://github.com/zwjtano/loon-
 #!icon=https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/00/a2/9a/00a29a65-e92e-52da-15d5-c13b1c83fe2e/AppIcon-0-1x_U007epad-0-11-0-85-220-0.png/512x512bb.jpg
-#!date=2026-07-03
+#!date=2026-07-16
 #!loon_version=3.4.0
 
 [Rule]
@@ -19,6 +19,8 @@ DOMAIN-SUFFIX,advertising.a2z.com,REJECT
 DOMAIN-SUFFIX,doubleclick-cn.net,REJECT
 DOMAIN-SUFFIX,googlesyndication-cn.com,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,bannerflow.net,REJECT
+DOMAIN-SUFFIX,insightexpressai.com,REJECT
 
 [Rewrite]
 # 自家广告列表：返回空数组，避免继续请求 house-ads 图片
@@ -26,10 +28,11 @@ DOMAIN-SUFFIX,googlesyndication.com,REJECT
 
 # 自家广告图片兜底拦截，不影响球队 Logo 等正常图片
 ^https:\/\/images\.fotmob\.com\/image_resources\/house-ads\/.* reject
+^https:\/\/images\.fotmob\.com\/hero_campaigns\/.* reject
 
 # HAR 中出现的广告竞价 / 同步接口
 ^https:\/\/fotmobas-fotmobsoccerlivescores\.adsbynimbus\.com\/.* reject
 ^https:\/\/pub\.fotmob\.com\/sync\/storage\/google\/.* reject
 
 [MITM]
-hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com
+hostname=pub.fotmob.com, images.fotmob.com, fotmobas-fotmobsoccerlivescores.adsbynimbus.com, c.bannerflow.net, secure.insightexpressai.com
