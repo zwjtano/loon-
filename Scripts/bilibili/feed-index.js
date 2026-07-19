@@ -48,18 +48,29 @@ function matchesValue(value, expectedValues) {
 }
 
 function isAdItem(item) {
-  const cardType = item.card_type;
-  const cardGoto = item.card_goto;
+  const cardType = String(item.card_type || "").toLowerCase();
+  const cardGoto = String(item.card_goto || "").toLowerCase();
+  const adCardGotos = [
+    "ad_web_s",
+    "ad_av",
+    "ad_web_gif",
+    "ad_player",
+    "ad_inline_3d",
+    "ad_inline_eggs",
+  ];
 
-  if (cardType === "banner_v8" && cardGoto === "banner") {
-    return Array.isArray(item.banner_item) && item.banner_item.some((banner) => banner.type === "ad");
+  // iPad 9.3.0 uses cm_v1 while iPhone and other versions may use cm_v2.
+  if (["cm_v1", "cm_v2"].includes(cardType) && adCardGotos.includes(cardGoto)) {
+    return true;
   }
 
-  if (
-    cardType === "cm_v2" &&
-    ["ad_web_s", "ad_av", "ad_web_gif", "ad_player", "ad_inline_3d", "ad_inline_eggs"].includes(cardGoto)
-  ) {
-    return true;
+  // Keep compatibility with new card types when Bilibili still marks them as ads.
+  if (item.ad_info && cardGoto.startsWith("ad_")) return true;
+
+  if (["banner_v8", "banner_ipad_v8"].includes(cardType) && cardGoto === "banner") {
+    return Array.isArray(item.banner_item) && item.banner_item.some((banner) => {
+      return banner.type === "ad" || Boolean(banner.ad_info);
+    });
   }
 
   if (cardType === "small_cover_v10" && cardGoto === "game") return true;
