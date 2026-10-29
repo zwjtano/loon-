@@ -20,16 +20,19 @@ jobs:
         shell: pwsh
         run: ./tools/update-bilibili.ps1
 
+      - name: Test playback compatibility
+        run: node --test tests/bilibili-playback.test.cjs
+
       - name: Commit changes
         shell: bash
         run: |
-          if git diff --quiet -- Plugins/bilibili.lpx; then
+          if git diff --quiet -- Plugins/bilibili.lpx Scripts/bilibili/response-playback.js; then
             echo "No Bilibili plugin changes."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Plugins/bilibili.lpx
+          git add Plugins/bilibili.lpx Scripts/bilibili/response-playback.js
           git commit -m "chore: update bilibili plugin from upstream"
           git push
