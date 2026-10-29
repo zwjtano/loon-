@@ -1,8 +1,6 @@
 param(
   [string]$SourceUrl = "https://rucu6.pages.dev/Plugins/bilibili.lpx",
-  [string]$TargetPath = "Plugins/bilibili.lpx",
-  [string]$ResponseSourceUrl = "https://rucu6.pages.dev/Scripts/bilibili/response.js",
-  [string]$PlaybackScriptPath = "Scripts/bilibili/response-playback.js"
+  [string]$TargetPath = "Plugins/bilibili.lpx"
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,7 +26,7 @@ function Get-SourceContent {
   param([string]$Url)
 
   $headers = @{
-    "User-Agent" = "Loon/3.5.1 zwjtano-loon-sync"
+    "User-Agent" = "zwjtano-loon-sync"
     "Accept" = "application/vnd.github+json,text/plain,*/*"
   }
   $webClient = [System.Net.WebClient]::new()
@@ -58,21 +56,6 @@ function Assert-LoonPlugin {
   }
 }
 
-function ConvertTo-CompatiblePlaybackScript {
-  param([string]$Source)
-
-  # Stop syncing if upstream changes this implementation; never publish an unchecked fallback.
-  $pattern = 'n\|\|\(n=t\[xi\(e\)\],(?<warning>x\.warn\(`MD5 mismatch detected\.[\s\S]*?\))\),a\.md5=n'
-  if ([regex]::Matches($Source, $pattern).Count -ne 1 -or
-      -not $Source.Contains('v1.View/ViewProgress') -or
-      -not $Source.Contains('n=t[a.md5]')) {
-    throw "Upstream Chronos implementation changed. Refusing to publish an unsafe playback script."
-  }
-
-  $patched = [regex]::Replace($Source, $pattern, 'if(!n){${warning};return}a.md5=n')
-  return "// Generated from $ResponseSourceUrl by tools/update-bilibili.ps1.`n// Preserve official Chronos resources when their MD5 is not explicitly supported.`n" + $patched
-}
-
 function Assert-PatchedPlugin {
   param([string]$Content)
 
@@ -80,8 +63,7 @@ function Assert-PatchedPlugin {
     "Scripts/bilibili/home-tabs.js",
     "Scripts/bilibili/mine.js",
     "Scripts/bilibili/search-square.js",
-    "Scripts/bilibili/default-search-word.js",
-    "Scripts/bilibili/response-playback.js"
+    "Scripts/bilibili/default-search-word.js"
   )
 
   foreach ($marker in $requiredMarkers) {
@@ -99,7 +81,6 @@ if (-not (Test-Path $targetDir)) {
 
 $content = Get-SourceContent -Url $SourceUrl
 Assert-LoonPlugin -Content $content
-$playbackScript = ConvertTo-CompatiblePlaybackScript -Source (Get-SourceContent -Url $ResponseSourceUrl)
 $content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
   param($Match)
 
@@ -151,32 +132,13 @@ $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
 $minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, enable={customizeMinePage}"
 $feedIndexTag = ConvertFrom-Base64Utf8 "6L+H5ruk6aaW6aG15o6o6I2Q5rWB"
 $feedIndexScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=$repoRawBase/Scripts/bilibili/feed-index.js, requires-body=true, tag=$feedIndexTag, argument=[{customizeHomeFeed},{filterVerticalVideo}]"
-$playbackProgressScript = 'response if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.(?:view|viewunite)\.v1\.View\/ViewProgress$/i then script("' + $repoRawBase + '/Scripts/bilibili/response-playback.js", {${sponsorBlock}, ${logLevel}}) with tag="Playback compatibility", requires_body=true, binary_body_mode=true'
 
 $lines = $content -split "`n"
 $newLines = New-Object System.Collections.Generic.List[string]
 $insertedSearchScripts = $false
-$insertedPlaybackScript = $false
-$guardedSponsorRequest = $false
 
 for ($i = 0; $i -lt $lines.Count; $i++) {
   $line = $lines[$i]
-  if ($line -like '*v1\.DM\/DmSegMobile*') {
-    $newLines.Add((Add-EnableFlag -Line $line -Flag "sponsorBlock"))
-    $guardedSponsorRequest = $true
-    continue
-  }
-
-  if ($line -like '*bilibili\.app\.view*v1\.View\/*ViewProgress*') {
-    $line = $line.Replace('|ViewProgress', '')
-    $newLines.Add($line)
-    if (-not $insertedPlaybackScript) {
-      $newLines.Add($playbackProgressScript)
-      $insertedPlaybackScript = $true
-    }
-    continue
-  }
-
   if ($line -like '*app\.bilibili\.com\/x\/v2\/search\/square*') {
     continue
   }
@@ -226,12 +188,6 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
 $content = ($newLines -join "`n").TrimEnd() + "`n"
 Assert-PatchedPlugin -Content $content
-if (-not $insertedPlaybackScript -or -not $guardedSponsorRequest) {
-  throw "Upstream playback rules changed. Refusing to publish without compatibility guards."
-}
-$playbackFullPath = Join-Path (Get-Location) $PlaybackScriptPath
-[System.IO.Directory]::CreateDirectory((Split-Path -Parent $playbackFullPath)) | Out-Null
-[System.IO.File]::WriteAllText($playbackFullPath, $playbackScript, [System.Text.UTF8Encoding]::new($false))
 [System.IO.File]::WriteAllText($targetFullPath, $content, [System.Text.UTF8Encoding]::new($false))
 
 Write-Host "Updated $TargetPath from $SourceUrl and reapplied local Loon switches."

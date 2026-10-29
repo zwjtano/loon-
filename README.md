@@ -22,7 +22,6 @@
 - 支持自定义首页顶部频道标签
 - 支持隐藏首页游戏中心、底部发布、会员购等入口
 - 支持精简动态页、观影页、我的页面和首页推荐流
-- 空降助手仅替换已明确适配的播放器资源，遇到未知版本时保留官方资源与签名
 - 上游更新时会自动重新套用本地自定义开关和脚本规则
 
 ## 使用提示
@@ -40,17 +39,3 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\update-bilibili.ps1
 ```
 
 上游地址：`https://rucu6.pages.dev/Plugins/bilibili.lpx`
-
-### 播放器兼容修复（2026-10-29）
-
-播放器进度接口使用仓库内的 `Scripts/bilibili/response-playback.js`。该文件由上游脚本自动生成，仅修改未知 Chronos 校验值的处理：不再强制回退到其他版本。关闭「过滤视频内插播广告」后，同时停止分段弹幕请求接管和播放器资源替换。其他接口仍使用上游脚本。
-
-每日同步会更新兼容脚本并运行回归测试。如果上游实现结构变化，自动更新会报错并保留已发布版本，等待重新适配。
-
-验证命令（需要 Node.js 和 PowerShell 7）：
-
-```powershell
-node --test tests/bilibili-playback.test.cjs
-```
-
-本地可通过 `BILIBILI_HAR_PATH` 环境变量指定抓包，回放验证官方播放器资源是否完整保留。抓包和账号信息不上传仓库。此修复已通过抓包回放，手机端弹幕恢复情况仍需实测；同时启用其他 B 站插件时，其播放器改写不受本仓库控制。
