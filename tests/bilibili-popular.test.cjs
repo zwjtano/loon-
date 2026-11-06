@@ -48,7 +48,48 @@ function fixture(compressed) {
   ]), compressed);
 }
 
-async function run(body, argument, code = source) {
+function unframe(body) {
+  const bytes = Buffer.from(body);
+  assert.equal(bytes.readUInt32BE(1), bytes.length - 5);
+  return bytes[0] ? zlib.gunzipSync(bytes.subarray(5)) : bytes.subarray(5);
+}
+
+function messageFields(body) {
+  const output = [];
+  let offset = 0;
+  function readVarint() {
+    let value = 0n;
+    for (let index = 0; index < 10 && offset < body.length; index++) {
+      const byte = body[offset++];
+      value |= BigInt(byte & 127) << BigInt(index * 7);
+      if (byte < 128) return value;
+    }
+    throw new Error('Invalid varint');
+  }
+  while (offset < body.length) {
+    const key = Number(readVarint());
+    const wire = key & 7;
+    let value;
+    if (wire === 2) {
+      const length = Number(readVarint());
+      value = body.subarray(offset, offset + length);
+      offset += length;
+    } else if (wire === 0) {
+      value = readVarint();
+    } else if (wire === 1 || wire === 5) {
+      const length = wire === 1 ? 8 : 4;
+      value = body.subarray(offset, offset + length);
+      offset += length;
+    } else {
+      throw new Error('Unsupported wire type');
+    }
+    assert.ok(offset <= body.length);
+    output.push({ number: key >>> 3, value });
+  }
+  return output;
+}
+
+async function run(body, argument, code = source, requestUrl = 'https://grpc.biliapi.net/bilibili.app.show.v1.Popular/Index') {
   const logs = [];
   let finish;
   let timer;
@@ -60,7 +101,7 @@ async function run(body, argument, code = source) {
     $utils: { ungzip: bytes => Uint8Array.from(zlib.gunzipSync(bytes)) },
     $request: {
       method: 'POST',
-      url: 'https://grpc.biliapi.net/bilibili.app.show.v1.Popular/Index',
+      url: requestUrl,
       headers: {},
     },
     $response: { status: 200, headers: {}, body: Uint8Array.from(body) },
@@ -74,9 +115,7 @@ async function run(body, argument, code = source) {
       new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Timed out')), 3000); }),
     ]);
     assert.ok(result.body, `Script must return a valid body: ${logs.join('\n')}`);
-    const output = Buffer.from(result.body);
-    assert.equal(output.readUInt32BE(1), output.length - 5);
-    return output[0] ? zlib.gunzipSync(output.subarray(5)) : output.subarray(5);
+    return unframe(result.body);
   } finally {
     clearTimeout(timer);
   }
@@ -127,3 +166,30 @@ test('sync rejects an upstream implementation it cannot patch safely', () => {
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
 });
+
+// Only read private captures when explicitly requested; never check them into Git.
+if (process.env.BILIBILI_HAR_PATH) {
+  const capture = JSON.parse(fs.readFileSync(process.env.BILIBILI_HAR_PATH, 'utf8'));
+  for (const [index, entry] of capture.log.entries.entries()) {
+    const url = new URL(entry.request.url);
+    const isPopular = url.pathname.endsWith('.Popular/Index');
+    const isView = url.pathname.endsWith('viewunite.v1.View/View');
+    if (!isPopular && !isView) continue;
+    test(`private HAR entry ${index}: ${isPopular ? 'popular ad/recommendation removal' : 'upstream view ad removal'}`, async () => {
+      assert.equal(entry.response.content.encoding, 'base64');
+      const input = Buffer.from(entry.response.content.text, 'base64');
+      const output = await run(input, { filterHotSearch: false, logLevel: 'off' }, source, url.origin + url.pathname);
+      const before = messageFields(unframe(input));
+      const after = messageFields(output);
+      if (isPopular) {
+        const kinds = after.filter(field => field.number === 1).flatMap(field => messageFields(field.value).map(card => card.number));
+        assert.ok(kinds.includes(1), 'Keep normal video cards');
+        assert.ok(!kinds.includes(10), 'Remove upstream-identified UP recommendation cards');
+        assert.ok(!kinds.includes(11), 'Remove advertising cards');
+      } else {
+        assert.ok(before.some(field => field.number === 7), 'Captured response must contain the ad module');
+        assert.ok(!after.some(field => field.number === 7), 'The upstream view handler removes the ad module');
+      }
+    });
+  }
+}
