@@ -7,7 +7,7 @@
     "response.bundle.js": "b7dd80446c7cf704cf26ec8f3fccb62a527f469d1ea9f48c08e8cae7de0a57f3"
   },
   "core_response_source": "https://rucu6.pages.dev/Scripts/bilibili/response.js",
-  "core_response_sha256": "6fcfb97e8b46ea7d2fcbd8deb913099f37727fc5c5c3cf6440d2a0ef7577f8e3",
+  "core_response_sha256": "bfcc0970105056b51a02eb643931c8d4a8d9656f25a5c3f0d6fe9cf6b4d15f8e",
   "transformations": [
     "Isolate globalThis.$argument to the stage-local binding",
     "Run response ad cleanup after Global",
