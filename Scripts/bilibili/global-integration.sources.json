@@ -1,0 +1,16 @@
+{
+  "global_repository": "https://github.com/Biliverse/Global",
+  "global_version": "v0.9.3",
+  "global_assets": {
+    "BiliBili.Global.plugin": "1dd3f9e9f52a1743af05548b5a52dd4e37a27526ee9348073db1fa3c2c930d62",
+    "request.bundle.js": "511cdc2d5f0f738889e94a0518c16fd2c6d4906fef925bb65a7d8f68bede9625",
+    "response.bundle.js": "b7dd80446c7cf704cf26ec8f3fccb62a527f469d1ea9f48c08e8cae7de0a57f3"
+  },
+  "core_response_source": "https://rucu6.pages.dev/Scripts/bilibili/response.js",
+  "core_response_sha256": "6fcfb97e8b46ea7d2fcbd8deb913099f37727fc5c5c3cf6440d2a0ef7577f8e3",
+  "transformations": [
+    "Isolate globalThis.$argument to the stage-local binding",
+    "Run response ad cleanup after Global",
+    "Clean request-stage synthetic responses before returning"
+  ]
+}

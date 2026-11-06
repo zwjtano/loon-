@@ -20,19 +20,42 @@ jobs:
         shell: pwsh
         run: ./tools/update-bilibili.ps1
 
+      - name: Build integrated Global test plugin
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./tools/update-bilibili-global.ps1
+
       - name: Verify custom switches after sync
-        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs
+        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs tests/bilibili-global.test.cjs
 
       - name: Commit changes
-        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet -- Plugins/bilibili.lpx Scripts/bilibili/popular.js; then
-            echo "No Bilibili plugin changes."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Plugins/bilibili.lpx Scripts/bilibili/popular.js
-          git commit -m "chore: update bilibili plugin from upstream"
-          git push
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+          const files = ['Plugins/bilibili.lpx', 'Plugins/bilibili-global.lpx', 'Scripts/bilibili/popular.js', 'Scripts/bilibili/global-integration.js', 'Scripts/bilibili/global-integration.sources.json', 'third_party/biliverse-global/LICENSE'];
+          function api(path, method = 'GET', body) {
+            const args = ['api', `repos/${process.env.GITHUB_REPOSITORY}/${path}`, '--method', method];
+            if (body !== undefined) args.push('--input', '-');
+            return JSON.parse(execFileSync('gh', args, { encoding: 'utf8', input: body === undefined ? undefined : JSON.stringify(body), maxBuffer: 8 * 1024 * 1024 }));
+          }
+          const parent = process.env.GITHUB_SHA;
+          const base = api(`git/commits/${parent}`);
+          const entries = files.map(path => {
+            const blob = api('git/blobs', 'POST', { content: fs.readFileSync(path).toString('base64'), encoding: 'base64' });
+            return { path, mode: '100644', type: 'blob', sha: blob.sha };
+          });
+          const tree = api('git/trees', 'POST', { base_tree: base.tree.sha, tree: entries });
+          if (tree.sha === base.tree.sha) {
+            console.log('No Bilibili plugin changes.');
+            process.exit(0);
+          }
+          const branch = process.env.GITHUB_REF.replace('refs/heads/', '');
+          if (api(`git/ref/heads/${branch}`).object.sha !== parent) throw new Error('Branch advanced during sync; retry with the new head.');
+          const commit = api('git/commits', 'POST', { message: 'chore: update bilibili plugin from upstream', tree: tree.sha, parents: [parent] });
+          api(`git/refs/heads/${branch}`, 'PATCH', { sha: commit.sha, force: false });
+          console.log(`Published ${commit.sha} through the GitHub API.`);
+          NODE
