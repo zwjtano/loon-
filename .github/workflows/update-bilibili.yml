@@ -2,8 +2,8 @@ name: Update Bilibili Plugin
 
 on:
   schedule:
-    # 10:30 Beijing time every day
-    - cron: "30 2 * * *"
+    # Check twice per hour, away from the top-of-hour scheduling peak (UTC).
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 
 permissions:
