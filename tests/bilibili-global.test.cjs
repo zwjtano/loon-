@@ -297,6 +297,13 @@ test('overlapping endpoints select only one response script in the integrated pl
   assert.ok(!lines.some(line => /^DOMAIN, (api|app)\.biliapi\.(com|net), REJECT$/.test(line)));
 });
 
+test('integrated plugin keeps its stable name and updated feature description', () => {
+  assert.match(plugin, /^#!name=.+ \+ Global\r?$/m);
+  assert.ok(!plugin.includes('\u6d4b\u8bd5\u7248'));
+  const description = lines.find(line => line.startsWith('#!desc='));
+  for (const feature of ['Global', 'CDN', 'BoxJS']) assert.ok(description.includes(feature));
+});
+
 test('all integrated plugin argument references are declared', () => {
   const names = new Set(lines.map(line => line.match(/^([A-Za-z]\w*)\s*=/)?.[1]).filter(Boolean));
   for (const match of plugin.matchAll(/\$\{([A-Za-z]\w*)\}/g)) {

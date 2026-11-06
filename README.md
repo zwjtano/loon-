@@ -1,13 +1,13 @@
 # Loon 插件仓库
 
-这个仓库用于保存个人维护的 Loon 插件和相关脚本。
+个人维护的 Loon 插件仓库，提供哔哩哔哩核心净化版和 Global 整合版。支持去广告、搜索净化、首页自定义、直播及竖屏推荐过滤，并自动跟踪上游更新。
 
 ## 插件列表
 
 | 图标 | 插件 | 原始链接 | 一键导入 |
 | --- | --- | --- | --- |
 | <img src="https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png" width="42" height="42" /> | 哔哩哔哩自定义插件 | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili.lpx) | [导入 Loon](https://zwjtano.github.io/loon-/import/bilibili.html) |
-| <img src="https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png" width="42" height="42" /> | 哔哩哔哩 + Global（整合测试版） | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili-global.lpx) | 在 Loon 中添加左侧原始链接 |
+| <img src="https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png" width="42" height="42" /> | 哔哩哔哩 + Global（正式版） | [原始文件](https://raw.githubusercontent.com/zwjtano/loon-/master/Plugins/bilibili-global.lpx) | 在 Loon 中添加左侧原始链接 |
 
 ## 插件功能
 
@@ -28,9 +28,13 @@
 
 ## 使用提示
 
-### Global 整合测试版
+### Global 整合版
 
-整合 [Biliverse Global](https://github.com/Biliverse/Global) 的地区识别、地区线路、全区搜索、CDN 类型和 BoxJS 设置。核心净化版 `Plugins/bilibili.lpx` 保持不变。整合前备份标签为 `backup-before-global-integration-2026-11-06`，提交为 `c14a201`。
+**正式版本：[v1.0.0](https://github.com/zwjtano/loon-/releases/tag/bilibili-global-v1.0.0)**。仓库版本号与 Global 上游版本独立；插件内日期显示本仓库的发布时间。
+
+在一份插件内整合自定义净化与 [Biliverse Global](https://github.com/Biliverse/Global) 的地区识别、地区线路、全区搜索、CDN 类型和 BoxJS 设置，避免独立插件争抢同一响应。直播推荐、竖屏视频、热搜、搜索推荐及默认搜索词均可独立设置。只需要净化功能时，可使用不含 Global 的核心版 `Plugins/bilibili.lpx`。
+
+原测试版链接继续使用，更新插件即可，无需重新添加。整合前备份标签为 `backup-before-global-integration-2026-11-06`，提交为 `c14a201`，保留供回退。
 
 1. 停用原来的净化插件和独立 Global 插件，只启用 `bilibili-global.lpx`，避免同一响应被多份配置竞争。
 2. 在整合版设置中填写实际存在的大陆、香港、澳门、台湾节点或策略组名称；默认地区为 `CHN,HKG,TWN`。
@@ -56,7 +60,7 @@ Global 使用官方最新 Release 构建，下载资源经 GitHub 提供的 SHA2
 
 插件的 `#!date` 使用本仓库实际准备发布时的北京时间，不再沿用上游日期。插件配置或相关脚本有变化时刷新日期，无变化的定时检查保留原日期；仅 Global 内置脚本变化时不刷新核心版日期。手动生成插件后、通过 API 发布前，运行 `node tools/prepare-bilibili-release.cjs`；仅修正发布日期可添加 `--force`。
 
-同一次自动同步也会生成独立 Global 整合测试版，更新 Global 官方 Release 和上游净化脚本，并运行整合回归测试。核心版和整合版共享的自定义脚本仍会保留。可手动生成整合版：
+同一次自动同步也会生成 Global 整合版，更新 Global 官方 Release 和上游净化脚本，并运行整合回归测试。核心版和整合版共享的自定义脚本仍会保留。可手动生成整合版：
 
 ```powershell
 pwsh -NoProfile -File tools/update-bilibili-global.ps1

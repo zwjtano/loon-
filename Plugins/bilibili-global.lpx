@@ -1,8 +1,8 @@
-#!name=哔哩哔哩 + Global（整合测试版）
-#!desc=Global 地区识别、线路与搜索功能 + 自定义净化。测试时仅启用此插件，并填写实际存在的地区策略组。
+#!name=哔哩哔哩 + Global
+#!desc=整合哔哩哔哩去广告与 Global 地区线路、全区搜索、CDN 和 BoxJS 功能，支持首页自定义、搜索净化、直播及竖屏推荐过滤。仅启用此插件，并填写实际存在的地区策略组。
 #!author=RuCu6[https://github.com/RuCu6], kokoryh[https://github.com/kokoryh], 可莉🅥[https://gitlab.com/lodepuly/vpn_tool], zwjtano[https://github.com/zwjtano], VirgilClyne[https://github.com/VirgilClyne]
 #!icon=https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png
-#!date=2026-11-06 11:03
+#!date=2026-11-06 11:05
 #!loon_version=3.5.1(983)
 
 [Argument]

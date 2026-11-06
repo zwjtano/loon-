@@ -123,8 +123,8 @@ $output = [Collections.Generic.List[string]]::new()
 $removedPaymentRewrite = $false
 $splitCoreViewRule = $false
 foreach ($line in ($base -split "`n")) {
-  if ($line.StartsWith('#!name=')) { $output.Add('#!name=哔哩哔哩 + Global（整合测试版）'); continue }
-  if ($line.StartsWith('#!desc=')) { $output.Add('#!desc=Global 地区识别、线路与搜索功能 + 自定义净化。测试时仅启用此插件，并填写实际存在的地区策略组。'); continue }
+  if ($line.StartsWith('#!name=')) { $output.Add('#!name=哔哩哔哩 + Global'); continue }
+  if ($line.StartsWith('#!desc=')) { $output.Add('#!desc=整合哔哩哔哩去广告与 Global 地区线路、全区搜索、CDN 和 BoxJS 功能，支持首页自定义、搜索净化、直播及竖屏推荐过滤。仅启用此插件，并填写实际存在的地区策略组。'); continue }
   if ($line.StartsWith('#!loon_version=')) { $output.Add('#!loon_version=3.5.1(983)'); continue }
   if ($line.StartsWith('#!author=')) { $output.Add($line + ', VirgilClyne[https://github.com/VirgilClyne]'); continue }
   if ($line -eq '[Argument]') {

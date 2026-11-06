@@ -20,7 +20,7 @@ jobs:
         shell: pwsh
         run: ./tools/update-bilibili.ps1
 
-      - name: Build integrated Global test plugin
+      - name: Build integrated Global plugin
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
