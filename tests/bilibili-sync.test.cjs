@@ -56,7 +56,9 @@ test('PGC and dynamic cleanup honor their switches', () => {
 
 test('popular page retains upstream script arguments', () => {
   const rule = only('Popular\\/Index');
-  assert.ok(rule.includes('enable=${filterHotSearch}'));
+  assert.ok(!rule.includes('enable='), 'Core ad cleanup must run even with hot search disabled');
+  assert.ok(rule.includes('Scripts/bilibili/popular.js'));
+  assert.ok(rule.includes('${filterHotSearch}'));
   for (const argument of ['displayUpList', 'purifyComment', 'sponsorBlock', 'logLevel']) {
     assert.ok(rule.includes('${' + argument + '}'), argument);
   }

@@ -1,6 +1,8 @@
 param(
   [string]$SourceUrl = "https://rucu6.pages.dev/Plugins/bilibili.lpx",
-  [string]$TargetPath = "Plugins/bilibili.lpx"
+  [string]$TargetPath = "Plugins/bilibili.lpx",
+  [string]$ResponseSourceUrl = "https://rucu6.pages.dev/Scripts/bilibili/response.js",
+  [string]$PopularScriptPath = "Scripts/bilibili/popular.js"
 )
 
 $ErrorActionPreference = "Stop"
@@ -59,6 +61,33 @@ function Assert-LoonPlugin {
   }
 }
 
+function ConvertTo-PopularScript {
+  param([string]$Source)
+
+  $original = '["rcmdOneItem","smallCoverV5Ad","topicList"]'
+  if ([regex]::Matches($Source, [regex]::Escape($original)).Count -ne 1 -or
+      -not $Source.Contains('v1.Popular/Index')) {
+    throw "Upstream popular filter changed. Refusing to publish an unchecked customization."
+  }
+
+  # Keep upstream ad/recommendation cleanup; only topicList follows the user's switch.
+  $replacement = '["rcmdOneItem","smallCoverV5Ad",...(__loonPopularFilterHotSearch()?[''topicList'']:[])]'
+  $helper = @'
+// Generated from upstream response.js by tools/update-bilibili.ps1.
+// Only the popular topicList decision is customized. Other handlers stay upstream.
+function __loonPopularFilterHotSearch() {
+  let args = typeof $argument === "undefined" ? null : $argument;
+  if (typeof args === "string") {
+    try { args = JSON.parse(args); } catch (_) { args = null; }
+  }
+  const value = args && args.filterHotSearch;
+  return value !== false && value !== "false";
+}
+// Upstream response begins below.
+'@
+  return $helper + "`n" + $Source.Replace($original, $replacement)
+}
+
 function Assert-PatchedPlugin {
   param([string]$Content)
 
@@ -67,7 +96,8 @@ function Assert-PatchedPlugin {
     "Scripts/bilibili/mine.js",
     "Scripts/bilibili/search-square.js",
     "Scripts/bilibili/default-search-word.js",
-    "Scripts/bilibili/feed-index.js"
+    "Scripts/bilibili/feed-index.js",
+    "Scripts/bilibili/popular.js"
   )
 
   foreach ($marker in $requiredMarkers) {
@@ -85,6 +115,7 @@ if (-not (Test-Path $targetDir)) {
 
 $content = Get-SourceContent -Url $SourceUrl
 Assert-LoonPlugin -Content $content
+$popularScript = ConvertTo-PopularScript -Source (Get-SourceContent -Url $ResponseSourceUrl)
 $content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
   param($Match)
 
@@ -176,7 +207,15 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 
   if ($line -like '*bilibili\.app\.show\.v1\.Popular\/Index*') {
-    $newLines.Add((Add-EnableFlag -Line $line -Flag "filterHotSearch"))
+    if ($line -notmatch '^response if ' -or
+        -not $line.Contains('https://rucu6.pages.dev/Scripts/bilibili/response.js') -or
+        -not $line.Contains('}) with ')) {
+      throw "Upstream popular rule changed. Refusing to disable core ad filtering."
+    }
+    $line = $line.Replace('https://rucu6.pages.dev/Scripts/bilibili/response.js', "$repoRawBase/Scripts/bilibili/popular.js")
+    $line = $line.Replace('}) with ', ', ${filterHotSearch}}) with ')
+    $line = $line -replace ',?\s*enable=\$?\{[^}]+\}', ''
+    $newLines.Add($line)
 
     if (-not $insertedSearchScripts) {
       $newLines.Add($searchSquareScript)
@@ -191,6 +230,9 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
 $content = ($newLines -join "`n").TrimEnd() + "`n"
 Assert-PatchedPlugin -Content $content
+$popularFullPath = Join-Path (Get-Location) $PopularScriptPath
+[System.IO.Directory]::CreateDirectory((Split-Path -Parent $popularFullPath)) | Out-Null
+[System.IO.File]::WriteAllText($popularFullPath, $popularScript, [System.Text.UTF8Encoding]::new($false))
 [System.IO.File]::WriteAllText($targetFullPath, $content, [System.Text.UTF8Encoding]::new($false))
 
 Write-Host "Updated $TargetPath from $SourceUrl and reapplied local Loon switches."

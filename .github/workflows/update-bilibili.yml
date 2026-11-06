@@ -21,18 +21,18 @@ jobs:
         run: ./tools/update-bilibili.ps1
 
       - name: Verify custom switches after sync
-        run: node --test tests/bilibili-sync.test.cjs
+        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs
 
       - name: Commit changes
         shell: bash
         run: |
-          if git diff --quiet -- Plugins/bilibili.lpx; then
+          if git diff --quiet -- Plugins/bilibili.lpx Scripts/bilibili/popular.js; then
             echo "No Bilibili plugin changes."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Plugins/bilibili.lpx
+          git add Plugins/bilibili.lpx Scripts/bilibili/popular.js
           git commit -m "chore: update bilibili plugin from upstream"
           git push

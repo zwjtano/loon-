@@ -17,7 +17,7 @@
 上游作者：[RuCu6](https://github.com/RuCu6)、[kokoryh](https://github.com/kokoryh)、[可莉](https://gitlab.com/lodepuly/vpn_tool)。上游地址：[https://rucu6.pages.dev/Plugins/bilibili.lpx](https://rucu6.pages.dev/Plugins/bilibili.lpx)。
 
 - 过滤热搜、热门话题和搜索建议
-- 可单独隐藏热门页 UP 推荐卡的关注按钮
+- 热门页广告和上游识别的 UP 推荐卡始终过滤，不再随热搜开关一起关闭（按上游删除对应卡片，并非只隐藏关注按钮）
 - 屏蔽默认搜索框关键词
 - 支持自定义首页顶部频道标签
 - 支持隐藏首页游戏中心、底部发布、会员购等入口
@@ -34,7 +34,7 @@
 
 哔哩哔哩插件已配置 GitHub Actions 自动更新，每 30 分钟检查一次上游（计划在每小时第 7、37 分钟运行，GitHub 调度可能延迟）。有变化时自动提交，没有变化时不提交。同步后会重新套用本地自定义开关和脚本规则，并通过配置回归测试后再发布；检查失败时保留仓库原版本。
 
-仓库自动同步不等于手机已更新，Loon 仍需更新插件和远程脚本。播放器与弹幕沿用上游脚本，不包含此前已回退的本地兼容实验。如果需要手动更新，可以运行：
+仓库自动同步不等于手机已更新，Loon 仍需更新插件和远程脚本。热门页使用自动生成的 `popular.js`：保留上游过滤，只将 `topicList` 的移除交给热搜开关；上游结构变化时停止发布，等待重新适配。播放器与弹幕沿用上游脚本，不包含此前已回退的本地兼容实验。如果需要手动更新，可以运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\update-bilibili.ps1
