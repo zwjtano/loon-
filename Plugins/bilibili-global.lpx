@@ -2,7 +2,7 @@
 #!desc=Global 地区识别、线路与搜索功能 + 自定义净化。测试时仅启用此插件，并填写实际存在的地区策略组。
 #!author=RuCu6[https://github.com/RuCu6], kokoryh[https://github.com/kokoryh], 可莉🅥[https://gitlab.com/lodepuly/vpn_tool], zwjtano[https://github.com/zwjtano], VirgilClyne[https://github.com/VirgilClyne]
 #!icon=https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png
-#!date=2026-11-06 07:10
+#!date=2026-11-06 11:03
 #!loon_version=3.5.1(983)
 
 [Argument]
