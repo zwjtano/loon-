@@ -18,7 +18,10 @@ function Add-EnableFlag {
     [string]$Separator = ", "
   )
 
-  $lineWithoutEnable = $Line -replace ",?\s*enable=\{[^}]+\}", ""
+  $lineWithoutEnable = $Line -replace ',?\s*enable=\$?\{[^}]+\}', ''
+  if ($Line -match '^\s*(request|response)\s+if\s') {
+    return "$lineWithoutEnable$Separator" + 'enable=${' + $Flag + '}'
+  }
   return "$lineWithoutEnable$Separator" + "enable={$Flag}"
 }
 
