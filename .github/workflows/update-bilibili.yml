@@ -20,6 +20,9 @@ jobs:
         shell: pwsh
         run: ./tools/update-bilibili.ps1
 
+      - name: Verify custom switches after sync
+        run: node --test tests/bilibili-sync.test.cjs
+
       - name: Commit changes
         shell: bash
         run: |

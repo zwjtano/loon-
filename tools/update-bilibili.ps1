@@ -26,7 +26,7 @@ function Get-SourceContent {
   param([string]$Url)
 
   $headers = @{
-    "User-Agent" = "zwjtano-loon-sync"
+    "User-Agent" = "Loon/3.5.1 zwjtano-loon-sync"
     "Accept" = "application/vnd.github+json,text/plain,*/*"
   }
   $webClient = [System.Net.WebClient]::new()
@@ -63,7 +63,8 @@ function Assert-PatchedPlugin {
     "Scripts/bilibili/home-tabs.js",
     "Scripts/bilibili/mine.js",
     "Scripts/bilibili/search-square.js",
-    "Scripts/bilibili/default-search-word.js"
+    "Scripts/bilibili/default-search-word.js",
+    "Scripts/bilibili/feed-index.js"
   )
 
   foreach ($marker in $requiredMarkers) {
@@ -124,8 +125,6 @@ $searchSquareTag = ConvertFrom-Base64Utf8 "6L+H5ruk5pCc57Si5o6o6I2Q"
 $defaultSearchWordTag = ConvertFrom-Base64Utf8 "5bGP6JS96buY6K6k5pCc57Si5qGG5YWz6ZSu6K+N"
 $searchSquareScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/search\/square\? script-path=$repoRawBase/Scripts/bilibili/search-square.js, requires-body=false, tag=$searchSquareTag, enable={filterSearchSuggest}"
 $defaultSearchWordScript = "http-request ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ script-path=$repoRawBase/Scripts/bilibili/default-search-word.js, requires-body=false, binary-body-mode=true, tag=$defaultSearchWordTag, enable={filterDefaultSearchWord}"
-$popularHotFilterTag = ConvertFrom-Base64Utf8 "6L+H5ruk54Ot5pCc54Ot6Zeo6K+d6aKY"
-$popularHotFilterScript = "http-response ^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.show\.v1\.Popular\/Index$ script-path=https://rucu6.pages.dev/Scripts/bilibili/response.js, requires-body=true, binary-body-mode=true, tag=$popularHotFilterTag, enable={filterHotSearch}"
 $homeTabsTag = ConvertFrom-Base64Utf8 "6Ieq5a6a5LmJ6aaW6aG16aG26YOo5qCH562+"
 $homeTabsScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2\? script-path=$repoRawBase/Scripts/bilibili/home-tabs.js, requires-body=true, tag=$homeTabsTag, argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]"
 $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
@@ -148,7 +147,8 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
     continue
   }
 
-  if ($line -like '*bilibili\.app\.interface\.v1\.Search\/DefaultWords*mock-response-body*') {
+  if ($line -like '*bilibili\.app\.interface\.v1\.Search\/DefaultWords*' -and
+      ($line -like '*mock-response-body*' -or $line -like '*response.body.mock*')) {
     continue
   }
 
@@ -157,7 +157,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
     continue
   }
 
-  if ($line -like 'http-response *api\.bilibili\.com\/pgc\/page\/*') {
+  if ($line -like '*api\.bilibili\.com\/pgc\/page\/*' -and $line -like '*Scripts/bilibili/json.js*') {
     $newLines.Add((Add-EnableFlag -Line $line -Flag "customizePgcPage"))
     continue
   }
@@ -173,7 +173,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 
   if ($line -like '*bilibili\.app\.show\.v1\.Popular\/Index*') {
-    $newLines.Add($popularHotFilterScript)
+    $newLines.Add((Add-EnableFlag -Line $line -Flag "filterHotSearch"))
 
     if (-not $insertedSearchScripts) {
       $newLines.Add($searchSquareScript)
