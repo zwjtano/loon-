@@ -2,6 +2,7 @@ function parseArguments() {
   const defaults = {
     customizeHomeFeed: true,
     filterVerticalVideo: false,
+    filterLive: true,
   };
 
   if (typeof $argument === "undefined") return defaults;
@@ -11,6 +12,7 @@ function parseArguments() {
       ...defaults,
       customizeHomeFeed: $argument[0],
       filterVerticalVideo: $argument[1],
+      filterLive: $argument[2] ?? defaults.filterLive,
     };
   }
 
@@ -88,15 +90,21 @@ function isVerticalVideo(item) {
   );
 }
 
+function isLiveItem(item) {
+  return matchesValue(item.goto, ["live"]) || matchesValue(item.card_goto, ["live"]);
+}
+
 let body = JSON.parse($response.body || "{}");
 let config = parseArguments();
 let shouldFilterAds = isEnabled(config.customizeHomeFeed);
 let shouldFilterVerticalVideo = isEnabled(config.filterVerticalVideo);
+let shouldFilterLive = isEnabled(config.filterLive);
 
 if (body.data && Array.isArray(body.data.items)) {
   body.data.items = body.data.items.filter((item) => {
     if (shouldFilterAds && isAdItem(item)) return false;
     if (shouldFilterVerticalVideo && isVerticalVideo(item)) return false;
+    if (shouldFilterLive && isLiveItem(item)) return false;
     return true;
   });
 }

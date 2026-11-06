@@ -27,7 +27,7 @@ jobs:
         run: ./tools/update-bilibili-global.ps1
 
       - name: Verify custom switches after sync
-        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs tests/bilibili-global.test.cjs
+        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs tests/bilibili-global.test.cjs tests/bilibili-feed.test.cjs
 
       - name: Commit changes
         env:

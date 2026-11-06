@@ -20,7 +20,7 @@ test('custom arguments are preserved without duplicate definitions', () => {
     'customizeDynamicPage', 'customizeHomeTabs', 'homeTopTabs',
     'hideHomeTopGameCenter', 'hideHomeBottomPublish', 'hideHomeBottomMall',
     'customizePgcPage', 'customizeMinePage', 'customizeHomeFeed',
-    'filterVerticalVideo', 'filterHotSearch', 'filterSearchSuggest',
+    'filterVerticalVideo', 'filterLive', 'filterHotSearch', 'filterSearchSuggest',
     'filterDefaultSearchWord',
   ];
   for (const name of names) {
@@ -32,7 +32,7 @@ test('custom scripts remain available with their switches and arguments', () => 
   const expected = {
     'home-tabs': 'argument=[{homeTopTabs},{customizeHomeTabs},{hideHomeTopGameCenter},{hideHomeBottomPublish},{hideHomeBottomMall}]',
     mine: 'enable={customizeMinePage}',
-    'feed-index': 'argument=[{customizeHomeFeed},{filterVerticalVideo}]',
+    'feed-index': 'argument=[{customizeHomeFeed},{filterVerticalVideo},{filterLive}]',
     'search-square': 'enable={filterSearchSuggest}',
     'default-search-word': 'enable={filterDefaultSearchWord}',
   };
