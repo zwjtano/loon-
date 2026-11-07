@@ -30,7 +30,7 @@
 
 ### Global 整合版
 
-**正式版本：[v1.0.0](https://github.com/zwjtano/loon-/releases/tag/bilibili-global-v1.0.0)**。仓库版本号与 Global 上游版本独立；插件内日期显示本仓库的发布时间。
+**正式版本：[v1.0.1](https://github.com/zwjtano/loon-/releases/tag/bilibili-global-v1.0.1)**。仓库版本号与 Global 上游版本独立；插件内日期显示本仓库的发布时间。
 
 在一份插件内整合自定义净化与 [Biliverse Global](https://github.com/Biliverse/Global) 的地区识别、地区线路、全区搜索、CDN 类型和 BoxJS 设置，避免独立插件争抢同一响应。直播推荐、竖屏视频、热搜、搜索推荐及默认搜索词均可独立设置。只需要净化功能时，可使用不含 Global 的核心版 `Plugins/bilibili.lpx`。
 
@@ -53,6 +53,12 @@ Global 使用官方最新 Release 构建，下载资源经 GitHub 提供的 SHA2
 - 如果跳转页不可用，可以打开“原始文件”复制链接，再在 Loon 里手动添加
 - 需要 Rewrite 生效的功能，请在 Loon 中配置并信任 MitM 证书
 - 同时使用 BiliBili.Global 等插件时，同一接口只能执行第一条命中的响应脚本。若视频详情请求仅执行 `BiliBili.Global.viewunite.v1.View.grpc`，本插件的去广告脚本就不会执行。可临时停用 Global 的该条响应脚本（不是同名请求脚本），验证冲突；这会停用 Global 对该接口的响应增强。本插件无法替你改变手机上其他插件的优先级。
+
+### 空降助手
+
+核心版和 Global 整合版均接入上游原版 `request.js` 的弹幕及 `ViewProgress` 请求处理，受「空降助手」开关控制，不包含本地修改 Chronos 的兼容实验。
+
+[脚本作者说明](https://github.com/kokoryh/Sparkle/blob/master/src/script/bilibili/README.md)：哔哩哔哩 App 9.17.0 及以上启用强制 RSA 验签，空降助手改为在章节进度条标记广告，需手动点击章节跳转，并非自动跳过。旧版客户端是否可自动空降仍取决于上游适配、弹幕及资源加载情况。片段来自社区标注；视频没有标注、空降接口或代理不可用时不会产生空降标记。
 
 ## 维护说明
 

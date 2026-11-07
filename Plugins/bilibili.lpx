@@ -2,7 +2,7 @@
 #!desc=没有广告的哔哩哔哩更值得干杯。
 #!author=RuCu6[https://github.com/RuCu6], kokoryh[https://github.com/kokoryh], 可莉🅥[https://gitlab.com/lodepuly/vpn_tool], zwjtano[https://github.com/zwjtano]
 #!icon=https://raw.githubusercontent.com/zwjtano/icons/main/icons/bilibili.png
-#!date=2026-11-07 00:54
+#!date=2026-11-07 12:02
 #!loon_version=3.5.1(978)
 
 [Argument]
@@ -23,7 +23,7 @@ filterSearchSuggest=switch, true, false, tag=过滤「搜索推荐」, desc=- tr
 filterDefaultSearchWord=switch, true, false, tag=屏蔽「默认搜索框关键词」, desc=- true: 开启\n- false: 关闭
 optimizeRequest=switch, true, false, tag=开启「评论区」加载优化, desc=true:开启 false:关闭
 purifyComment=switch, true, false, tag=过滤「评论区」置顶广告, desc=true:开启 false:关闭
-sponsorBlock=switch, true, false, tag=开启「空降助手」, desc=过滤「视频内」插播广告 true:开启 false:关闭
+sponsorBlock=switch, true, false, tag=开启「空降助手」, desc=9.17.0及以上标记广告章节，需手动点击跳转；旧版自动空降视上游适配；仅对有社区标注的视频生效
 logLevel=select, "error", "warn", "info", "debug", "off", tag=配置「日志等级」, desc=日志等级
 
 [Rule]
@@ -124,6 +124,7 @@ response if ${url} ~= /^https:\/\/manga\.bilibili\.com\/twirp\/comic\.v1\.Comic\
 response if ${url} ~= /^https:\/\/manga\.bilibili\.com\/twirp\/comic\.v1\.(?:Comic\/AppInit|Home\/HomeFeed)\?/i then response.json.jq(".data as $data | .data[(\"activity_tab\", \"flash\", \"operate\") | select($data[.])]=null | if .data.feeds then .data.feeds |= map(select(.type | IN(15, 30) | not)) end")
 
 [Script]
+request if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.view(?:unite)?\.v1\.View\/ViewProgress$/i then script("https://rucu6.pages.dev/Scripts/bilibili/request.js", {${logLevel}}) with enable=${sponsorBlock}, tag="SponsorBlock ViewProgress", timeout=10, requires_body=true, binary_body_mode=true
 request if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$/i then script("https://rucu6.pages.dev/Scripts/bilibili/request.js", {${logLevel}}) with enable=${sponsorBlock}, tag="移除视频内插播广告", requires_body=true, binary_body_mode=true
 request if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.main\.community\.reply\.v1\.Reply\/MainList$/i then script("https://rucu6.pages.dev/Scripts/bilibili/request.js", {${purifyComment}, ${logLevel}}) with enable=${optimizeRequest}, tag="移除评论页面广告", requires_body=true, binary_body_mode=true
 response if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.dynamic\.v2\.Dynamic\/DynAll$/i then script("https://rucu6.pages.dev/Scripts/bilibili/response.js", {${displayUpList}, ${purifyComment}, ${sponsorBlock}, ${logLevel}}) with tag="移除动态页面广告", requires_body=true, binary_body_mode=true, enable=${customizeDynamicPage}

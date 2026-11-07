@@ -2,7 +2,9 @@ param(
   [string]$SourceUrl = "https://rucu6.pages.dev/Plugins/bilibili.lpx",
   [string]$TargetPath = "Plugins/bilibili.lpx",
   [string]$ResponseSourceUrl = "https://rucu6.pages.dev/Scripts/bilibili/response.js",
-  [string]$PopularScriptPath = "Scripts/bilibili/popular.js"
+  [string]$PopularScriptPath = "Scripts/bilibili/popular.js",
+  [string]$RequestSourceUrl = "https://rucu6.pages.dev/Scripts/bilibili/request.js",
+  [string]$RequestTestPath = $env:BILIBILI_REQUEST_SCRIPT_PATH
 )
 
 $ErrorActionPreference = "Stop"
@@ -107,6 +109,16 @@ function Assert-PatchedPlugin {
   }
 }
 
+function Assert-SponsorRequestScript {
+  param([string]$Source)
+
+  foreach ($route in @('view.v1.View/ViewProgress', 'viewunite.v1.View/ViewProgress', 'v1.DM/DmSegMobile')) {
+    if (-not $Source.Contains($route) -or $Source.TrimStart().StartsWith('<')) {
+      throw "Upstream sponsor request handler changed. Refusing to publish an unchecked route: $route"
+    }
+  }
+}
+
 $targetFullPath = Join-Path (Get-Location) $TargetPath
 $targetDir = Split-Path -Parent $targetFullPath
 if (-not (Test-Path $targetDir)) {
@@ -116,6 +128,8 @@ if (-not (Test-Path $targetDir)) {
 $content = Get-SourceContent -Url $SourceUrl
 Assert-LoonPlugin -Content $content
 $popularScript = ConvertTo-PopularScript -Source (Get-SourceContent -Url $ResponseSourceUrl)
+$requestScript = Get-SourceContent -Url $RequestSourceUrl
+Assert-SponsorRequestScript -Source $requestScript
 $content = [regex]::Replace($content, '(?m)^#!author=(.*)$', {
   param($Match)
 
@@ -154,6 +168,8 @@ foreach ($argument in $arguments) {
 $insertAfter = '(?m)^(displayUpList=.*)$'
 $argumentBlock = '$1' + "`n" + ($arguments -join "`n")
 $content = $content -replace $insertAfter, $argumentBlock
+$sponsorDescription = ConvertFrom-Base64Utf8 "OS4xNy4w5Y+K5Lul5LiK5qCH6K6w5bm/5ZGK56ug6IqC77yM6ZyA5omL5Yqo54K55Ye76Lez6L2s77yb5pen54mI6Ieq5Yqo56m66ZmN6KeG5LiK5ri46YCC6YWN77yb5LuF5a+55pyJ56S+5Yy65qCH5rOo55qE6KeG6aKR55Sf5pWI"
+$content = $content -replace '(?m)^(sponsorBlock=.*?desc=).*$', ('${1}' + $sponsorDescription)
 
 $repoRawBase = "https://raw.githubusercontent.com/zwjtano/loon-/master"
 $searchSquareTag = ConvertFrom-Base64Utf8 "6L+H5ruk5pCc57Si5o6o6I2Q"
@@ -166,13 +182,20 @@ $minePageTag = ConvertFrom-Base64Utf8 "57K+566A5oiR55qE6aG16Z2i"
 $minePageScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/account\/mine script-path=$repoRawBase/Scripts/bilibili/mine.js, requires-body=true, tag=$minePageTag, enable={customizeMinePage}"
 $feedIndexTag = ConvertFrom-Base64Utf8 "6L+H5ruk6aaW6aG15o6o6I2Q5rWB"
 $feedIndexScript = "http-response ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=$repoRawBase/Scripts/bilibili/feed-index.js, requires-body=true, tag=$feedIndexTag, argument=[{customizeHomeFeed},{filterVerticalVideo},{filterLive}]"
+$viewProgressScript = 'request if ${url} ~= /^https:\/\/(?:app\.bilibili\.com|grpc\.biliapi\.net)\/bilibili\.app\.view(?:unite)?\.v1\.View\/ViewProgress$/i then script("https://rucu6.pages.dev/Scripts/bilibili/request.js", {${logLevel}}) with enable=${sponsorBlock}, tag="SponsorBlock ViewProgress", timeout=10, requires_body=true, binary_body_mode=true'
 
 $lines = $content -split "`n"
+$hasViewProgressRequest = @($lines | Where-Object { $_ -match '^request if ' -and $_.Contains('ViewProgress') -and $_.Contains('Scripts/bilibili/request.js') }).Count -gt 0
 $newLines = New-Object System.Collections.Generic.List[string]
 $insertedSearchScripts = $false
 
 for ($i = 0; $i -lt $lines.Count; $i++) {
   $line = $lines[$i]
+  if ($line -eq '[Script]' -and -not $hasViewProgressRequest) {
+    $newLines.Add($line)
+    $newLines.Add($viewProgressScript)
+    continue
+  }
   if ($line -like '*app\.bilibili\.com\/x\/v2\/search\/square*') {
     continue
   }
@@ -231,6 +254,11 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
 $content = ($newLines -join "`n").TrimEnd() + "`n"
 Assert-PatchedPlugin -Content $content
+if ($RequestTestPath) {
+  $requestTestFullPath = if ([System.IO.Path]::IsPathRooted($RequestTestPath)) { $RequestTestPath } else { Join-Path (Get-Location) $RequestTestPath }
+  [System.IO.Directory]::CreateDirectory((Split-Path -Parent $requestTestFullPath)) | Out-Null
+  [System.IO.File]::WriteAllText($requestTestFullPath, $requestScript, [System.Text.UTF8Encoding]::new($false))
+}
 $popularFullPath = Join-Path (Get-Location) $PopularScriptPath
 [System.IO.Directory]::CreateDirectory((Split-Path -Parent $popularFullPath)) | Out-Null
 [System.IO.File]::WriteAllText($popularFullPath, $popularScript, [System.Text.UTF8Encoding]::new($false))

@@ -18,6 +18,8 @@ jobs:
 
       - name: Update Bilibili plugin from upstream
         shell: pwsh
+        env:
+          BILIBILI_REQUEST_SCRIPT_PATH: ${{ runner.temp }}/bilibili-request.js
         run: ./tools/update-bilibili.ps1
 
       - name: Build integrated Global plugin
@@ -30,7 +32,9 @@ jobs:
         run: node tools/prepare-bilibili-release.cjs
 
       - name: Verify custom switches after sync
-        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs tests/bilibili-global.test.cjs tests/bilibili-feed.test.cjs tests/bilibili-release.test.cjs
+        env:
+          BILIBILI_REQUEST_SCRIPT_PATH: ${{ runner.temp }}/bilibili-request.js
+        run: node --test tests/bilibili-sync.test.cjs tests/bilibili-popular.test.cjs tests/bilibili-global.test.cjs tests/bilibili-feed.test.cjs tests/bilibili-release.test.cjs tests/bilibili-sponsor.test.cjs
 
       - name: Commit changes
         env:
