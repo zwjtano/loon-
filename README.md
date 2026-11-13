@@ -30,7 +30,7 @@
 
 ### Global 整合版
 
-**正式版本：[v1.0.1](https://github.com/zwjtano/loon-/releases/tag/bilibili-global-v1.0.1)**。仓库版本号与 Global 上游版本独立；插件内日期显示本仓库的发布时间。
+**正式版本：[v1.0.2](https://github.com/zwjtano/loon-/releases/tag/bilibili-global-v1.0.2)**。仓库版本号与 Global 上游版本独立；插件内日期显示本仓库的发布时间。
 
 在一份插件内整合自定义净化与 [Biliverse Global](https://github.com/Biliverse/Global) 的地区识别、地区线路、全区搜索、CDN 类型和 BoxJS 设置，避免独立插件争抢同一响应。直播推荐、竖屏视频、热搜、搜索推荐及默认搜索词均可独立设置。只需要净化功能时，可使用不含 Global 的核心版 `Plugins/bilibili.lpx`。
 
@@ -43,7 +43,7 @@
 
 视频详情响应在一个脚本中依次完成 Global 处理和上游去广告。Global 请求阶段直接返回的响应也先净化再返回。番剧季信息的付款字段清理在 Global 之后执行，避免 Rewrite 抢先禁用响应脚本。整合版允许 Global 上游支持的备用 API 域名，未沿用核心版对这四个备用域名的拒绝规则。
 
-Global 使用官方最新 Release 构建，下载资源经 GitHub 提供的 SHA256 摘要校验；确切版本和来源见 `Scripts/bilibili/global-integration.sources.json`。仅将 Global 的参数访问隔离至各处理阶段，未重写其地区识别和线路选择算法。许可证及修改说明见 `third_party/biliverse-global/`。
+Global 使用官方最新 Release 构建，下载资源经 GitHub 提供的 SHA256 摘要校验；确切版本和来源见 `Scripts/bilibili/global-integration.sources.json`。Global 参数及 HTTP 调用通过阶段内适配层接入，未重写其地区识别和线路选择算法。gRPC 播放请求按二进制读取地区探测响应，兼容 `Accept: */*` 和多值 Accept，避免电视剧播放数据被转成文本而黑屏；JSON 请求仍使用文本。许可证及修改说明见 `third_party/biliverse-global/`。
 
 本地测试覆盖地区选择、跨区搜索、配置复用、压缩数据、广告清理及私有抓包回放，但没有代替手机实测，也未实际验证地区代理的连通性或受限番剧播放。地区策略组不存在或不可用时，Global 功能不会凭空生效。
 

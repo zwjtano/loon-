@@ -119,6 +119,32 @@ function Assert-SponsorRequestScript {
   }
 }
 
+function Expand-UpstreamResponseRules {
+  param([string]$Content)
+
+  # Upstream merged the protobuf endpoints on 2026-11-12. Split only that
+  # recognized layout so individual custom switches retain their boundaries.
+  $merged = 'bilibili\.(?:app\.(?:dynamic\.v2\.Dynamic\/DynAll|playerunite\.v1\.Player\/PlayViewUnite|playurl\.v1\.PlayURL\/PlayView|show\.v1\.Popular\/Index|view(unite)?\.v1\.View\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress))|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|pgc\.gateway\.player\.v2\.PlayURL\/PlayView|polymer\.app\.search\.v1\.Search\/SearchAll)'
+  $paths = @(
+    'bilibili\.app\.dynamic\.v2\.Dynamic\/DynAll',
+    'bilibili\.app\.show\.v1\.Popular\/Index',
+    'bilibili\.app\.playerunite\.v1\.Player\/PlayViewUnite',
+    'bilibili\.app\.playurl\.v1\.PlayURL\/PlayView',
+    'bilibili\.app\.view\.v1\.View\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress)',
+    'bilibili\.app\.viewunite\.v1\.View\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress)',
+    'bilibili\.community\.service\.dm\.v1\.DM\/DmView',
+    'bilibili\.main\.community\.reply\.v1\.Reply\/MainList',
+    'bilibili\.pgc\.gateway\.player\.v2\.PlayURL\/PlayView',
+    'bilibili\.polymer\.app\.search\.v1\.Search\/SearchAll'
+  )
+  return (($Content -split "`n" | ForEach-Object {
+    if ($_.StartsWith('response if ') -and $_.Contains($merged) -and $_.Contains('Scripts/bilibili/response.js')) {
+      $line = $_
+      foreach ($path in $paths) { $line.Replace($merged, $path) }
+    } else { $_ }
+  }) -join "`n")
+}
+
 $targetFullPath = Join-Path (Get-Location) $TargetPath
 $targetDir = Split-Path -Parent $targetFullPath
 if (-not (Test-Path $targetDir)) {
@@ -127,6 +153,7 @@ if (-not (Test-Path $targetDir)) {
 
 $content = Get-SourceContent -Url $SourceUrl
 Assert-LoonPlugin -Content $content
+$content = Expand-UpstreamResponseRules -Content $content
 $popularScript = ConvertTo-PopularScript -Source (Get-SourceContent -Url $ResponseSourceUrl)
 $requestScript = Get-SourceContent -Url $RequestSourceUrl
 Assert-SponsorRequestScript -Source $requestScript
@@ -191,6 +218,9 @@ $insertedSearchScripts = $false
 
 for ($i = 0; $i -lt $lines.Count; $i++) {
   $line = $lines[$i]
+  if ($line.StartsWith('request if ') -and $line.Contains('ViewProgress') -and $line.Contains('Scripts/bilibili/request.js') -and $line -notmatch '\btimeout=') {
+    $line += ', timeout=10'
+  }
   if ($line -eq '[Script]' -and -not $hasViewProgressRequest) {
     $newLines.Add($line)
     $newLines.Add($viewProgressScript)

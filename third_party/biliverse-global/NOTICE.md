@@ -8,7 +8,9 @@ release bundles, by VirgilClyne and the Biliverse contributors.
 - Exact release and asset SHA256 digests: Scripts/bilibili/global-integration.sources.json.
 
 Changes made by this repository: the bundles run in separate function scopes;
-`globalThis.$argument` accesses bind to their stage-local `$argument`; an outer
+`globalThis.$argument` accesses bind to their stage-local `$argument`;
+`globalThis.$httpClient` accesses bind to a stage-local adapter that enables
+binary responses for protobuf requests regardless of the Accept header; an outer
 adapter sequences Global processing and RuCu6 ad cleanup. Global's routing,
 cache, search, preference storage and regional selection implementations are
 otherwise unchanged. This is an unofficial integration, not a Biliverse release.

@@ -10,6 +10,7 @@
   "core_response_sha256": "bfcc0970105056b51a02eb643931c8d4a8d9656f25a5c3f0d6fe9cf6b4d15f8e",
   "transformations": [
     "Isolate globalThis.$argument to the stage-local binding",
+    "Bind Global HTTP calls to a binary-safe Loon adapter",
     "Run response ad cleanup after Global",
     "Clean request-stage synthetic responses before returning"
   ]

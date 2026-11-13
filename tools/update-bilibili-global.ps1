@@ -59,11 +59,15 @@ foreach ($bundle in @($globalRequest, $globalResponse)) {
     if ($bundle.Contains($global)) { throw "Unsupported Global runtime dependency: $global" }
   }
 }
+if (-not $globalRequest.Contains('globalThis.$httpClient')) {
+  throw "Global HTTP runtime changed; review the binary-safe adapter before publishing."
+}
 
-$template = Get-Content -Raw -LiteralPath "tools/templates/bilibili-global.js"
-$engine = $template.Replace('/*__GLOBAL_REQUEST__*/', $globalRequest.Replace('globalThis.$argument', '$argument'))
-$engine = $engine.Replace('/*__GLOBAL_RESPONSE__*/', $globalResponse.Replace('globalThis.$argument', '$argument'))
+$template = (Get-Content -Raw -LiteralPath "tools/templates/bilibili-global.js") -replace "`r`n", "`n"
+$engine = $template.Replace('/*__GLOBAL_REQUEST__*/', $globalRequest.Replace('globalThis.$argument', '$argument').Replace('globalThis.$httpClient', '$httpClient'))
+$engine = $engine.Replace('/*__GLOBAL_RESPONSE__*/', $globalResponse.Replace('globalThis.$argument', '$argument').Replace('globalThis.$httpClient', '$httpClient'))
 $engine = $engine.Replace('/*__AD_RESPONSE__*/', $adResponse)
+$engineVersion = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($engine))).ToLowerInvariant().Substring(0, 12)
 
 $rawBase = "https://raw.githubusercontent.com/zwjtano/loon-/master"
 $allArguments = '${globalEnabled}, ${globalForceHost}, ${globalLocales}, ${globalProxyCHN}, ${globalProxyHKG}, ${globalProxyMAC}, ${globalProxyTWN}, ${globalStorage}, ${globalLogLevel}, ${displayUpList}, ${purifyComment}, ${sponsorBlock}, ${logLevel}'
@@ -101,7 +105,7 @@ foreach ($line in ($globalPlugin -split "`n")) {
       throw "Global script tag changed; cannot identify endpoint: $pattern"
     }
     $tag = ('Global + Ads: ' + $Matches[1].Trim()) | ConvertTo-Json -Compress
-    $rule = $type + ' if ${url} ~= /' + $pattern + '/i then script("' + $rawBase + '/Scripts/bilibili/global-integration.js", {' + $allArguments + '}) with tag=' + $tag + ', timeout=60'
+    $rule = $type + ' if ${url} ~= /' + $pattern + '/i then script("' + $rawBase + '/Scripts/bilibili/global-integration.js?v=' + $engineVersion + '", {' + $allArguments + '}) with tag=' + $tag + ', timeout=60'
     if ($requiresBody) { $rule += ', requires_body=true' }
     if ($binary) { $rule += ', binary_body_mode=true' }
     $globalRules.Add($rule)
@@ -166,7 +170,7 @@ $manifest = [ordered]@{
   global_assets = $assetDigests
   core_response_source = $CoreResponseUrl
   core_response_sha256 = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($adResponse))).ToLowerInvariant()
-  transformations = @('Isolate globalThis.$argument to the stage-local binding', 'Run response ad cleanup after Global', 'Clean request-stage synthetic responses before returning')
+  transformations = @('Isolate globalThis.$argument to the stage-local binding', 'Bind Global HTTP calls to a binary-safe Loon adapter', 'Run response ad cleanup after Global', 'Clean request-stage synthetic responses before returning')
 }
 $files = [ordered]@{
   $TargetPath = ($output -join "`n").TrimEnd() + "`n"

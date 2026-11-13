@@ -104,7 +104,34 @@ test('sync helper emits syntax-appropriate enable references without duplicates'
 test('playback uses upstream scripts, not the reverted experiment', () => {
   assert.ok(!plugin.includes('response-playback.js'));
   assert.ok(only('DM\\/DmSegMobile').includes('enable=${sponsorBlock}'));
-  const rule = only('View\\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress)');
+  const rule = only('viewunite\\.v1\\.View\\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress)');
   assert.ok(rule.includes('https://rucu6.pages.dev/Scripts/bilibili/response.js'));
   assert.ok(rule.includes('${sponsorBlock}'));
+});
+
+test('merged upstream response rules expand without losing or duplicating endpoints', () => {
+  const command = `
+    $tokens=$null; $errors=$null
+    $ast=[System.Management.Automation.Language.Parser]::ParseFile((Join-Path (Get-Location) 'tools/update-bilibili.ps1'),[ref]$tokens,[ref]$errors)
+    $function=$ast.Find({param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Expand-UpstreamResponseRules'},$true)
+    Invoke-Expression $function.Extent.Text
+    $pattern='^https:\\/\\/(?:app\\.bilibili\\.com|grpc\\.biliapi\\.net)\\/bilibili\\.(?:app\\.(?:dynamic\\.v2\\.Dynamic\\/DynAll|playerunite\\.v1\\.Player\\/PlayViewUnite|playurl\\.v1\\.PlayURL\\/PlayView|show\\.v1\\.Popular\\/Index|view(unite)?\\.v1\\.View\\/(?:AIRelateAsync|RelatesFeed|View|ViewProgress))|community\\.service\\.dm\\.v1\\.DM\\/DmView|main\\.community\\.reply\\.v1\\.Reply\\/MainList|pgc\\.gateway\\.player\\.v2\\.PlayURL\\/PlayView|polymer\\.app\\.search\\.v1\\.Search\\/SearchAll)$'
+    $line='response if \${url} ~= /' + $pattern + '/ then script("https://rucu6.pages.dev/Scripts/bilibili/response.js", {\${sponsorBlock}}) with requires_body=true, binary_body_mode=true'
+    @{original=$line;expanded=(Expand-UpstreamResponseRules -Content $line)} | ConvertTo-Json -Compress
+  `;
+  const result = spawnSync('pwsh', ['-NoProfile', '-Command', command], { cwd: root, encoding: 'utf8' });
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, result.stderr);
+  const data = JSON.parse(result.stdout);
+  const regex = line => new RegExp(line.match(/~= \/(.+)\/ then/)[1]);
+  const original = regex(data.original);
+  const expanded = data.expanded.split('\n');
+  assert.equal(expanded.length, 10);
+  for (const endpoint of ['app.dynamic.v2.Dynamic/DynAll', 'app.playerunite.v1.Player/PlayViewUnite', 'app.playurl.v1.PlayURL/PlayView', 'app.show.v1.Popular/Index', 'community.service.dm.v1.DM/DmView', 'main.community.reply.v1.Reply/MainList', 'pgc.gateway.player.v2.PlayURL/PlayView', 'polymer.app.search.v1.Search/SearchAll', ...['view', 'viewunite'].flatMap(view => ['AIRelateAsync', 'RelatesFeed', 'View', 'ViewProgress'].map(method => `app.${view}.v1.View/${method}`)), 'app.viewunite.v1.View/Unexpected']) {
+    for (const host of ['app.bilibili.com', 'grpc.biliapi.net']) {
+      const url = `https://${host}/bilibili.${endpoint}`;
+      assert.equal(expanded.filter(line => regex(line).test(url)).length, Number(original.test(url)), url);
+    }
+  }
+  for (const line of expanded) assert.ok(line.endsWith('with requires_body=true, binary_body_mode=true'));
 });

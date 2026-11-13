@@ -89,7 +89,7 @@ async function run({ request, response, options = {}, storage = {}, code = sourc
   const methods = {};
   for (const method of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
     methods[method] = (value, callback) => {
-      network.push({ method, url: value.url, node: value.node });
+      network.push({ method, url: value.url, node: value.node, binaryMode: value['binary-mode'] });
       if (http) http(value, callback);
       else callback('Unexpected network access', { status: 500, headers: {} }, '');
     };
@@ -211,12 +211,64 @@ test('Global region probes select the available region for a synthetic response'
   const { result, network } = await run({
     request: { method: 'GET', url: 'https://api.bilibili.com/pgc/player/web/playurl?ep_id=456', headers: {} },
     options: { globalProxyCHN: 'CN-Test', globalProxyHKG: 'HK-Test', globalProxyTWN: 'TW-Test' },
-    http: (request, callback) => callback(null, { status: 200, headers: { 'content-type': 'application/json' } },
-      JSON.stringify({ code: request.node === 'HK-Test' ? 0 : -404, result: { region: request.node } })),
+    http: (request, callback) => {
+      assert.ok(!request['binary-mode'], 'JSON region probes must remain text responses');
+      callback(null, { status: 200, headers: { 'content-type': 'application/json' } },
+        JSON.stringify({ code: request.node === 'HK-Test' ? 0 : -404, result: { region: request.node } }));
+    },
   });
   assert.deepEqual(network.map(request => request.node).sort(), ['CN-Test', 'HK-Test', 'TW-Test']);
   assert.equal(JSON.parse(result.response.body).result.region, 'HK-Test');
 });
+
+for (const accept of ['*/*', 'application/grpc,application/json', 'application/grpc']) {
+  test(`PGC region probes keep binary playback replies with Accept=${accept}`, async () => {
+    const reply = grpc(Buffer.concat([bytesField(1, Buffer.alloc(0)), bytesField(99, Buffer.from([0, 128, 255, 194, 139]))]), true);
+    const { result, network } = await run({
+      request: {
+        method: 'POST', url: 'https://grpc.biliapi.net/bilibili.app.playerunite.v1.Player/PlayViewUnite',
+        headers: { 'Content-Type': 'application/grpc', Accept: accept },
+        body: grpc(Buffer.concat([bytesField(1, Buffer.alloc(0)), bytesField(4, Buffer.concat([bytesField(1, 'ep_id'), bytesField(2, '123')]))])),
+      },
+      http: (request, callback) => {
+        callback(null, { status: 200, headers: { 'content-type': 'application/grpc', 'grpc-status': request.node === 'DIRECT' ? '0' : '7' } }, request['binary-mode'] ? reply : reply.toString('latin1'));
+      },
+    });
+    assert.equal(network.length, 3);
+    assert.ok(network.every(request => request.binaryMode === true), 'Loon must not decode protobuf replies as text');
+    assert.ok(result.response.body instanceof Uint8Array);
+    assert.deepEqual(fields(unframe(result.response.body)), fields(unframe(reply)));
+  });
+}
+
+if (process.env.BILIBILI_PLAYBACK_HAR_PATH) {
+  const capture = JSON.parse(fs.readFileSync(process.env.BILIBILI_PLAYBACK_HAR_PATH, 'utf8'));
+  for (const host of ['app.bilibili.com', 'grpc.biliapi.net']) {
+    test(`private playback capture: ${host} retains mainland video URLs without text corruption`, async () => {
+      const group = capture.log.entries.filter(entry => new URL(entry.request.url).host === host && new URL(entry.request.url).pathname.endsWith('Player/PlayViewUnite'));
+      const outer = group.find(entry => entry._loon?.script?.some(name => name.startsWith('Global + Ads:')));
+      const mainland = group.find(entry => entry._loon?.rule === 'Specific,DIRECT');
+      assert.ok(outer && mainland);
+      const captured = Buffer.from(mainland.response.content.text, 'base64');
+      // Loon's HAR may append unframed trailer text after the unary message.
+      const bytes = captured.subarray(0, 5 + captured.readUInt32BE(1));
+      const headers = Object.fromEntries(outer.request.headers.filter(header => /^(accept|content-type)$/i.test(header.name)).map(header => [header.name, header.value]));
+      const { result } = await run({
+        request: { method: 'POST', url: outer.request.url, headers, body: Buffer.from(outer.request.postData.text, 'base64') },
+        http: (request, callback) => {
+          assert.equal(request['binary-mode'], true);
+          callback(null, { status: 200, headers: { 'content-type': 'application/grpc', 'grpc-status': request.node === 'DIRECT' ? '0' : '7' } }, bytes);
+        },
+      });
+      const payload = unframe(result.response.body);
+      assert.ok(payload.includes(Buffer.from('bilivideo.com')));
+      const firstFrame = bytes.subarray(0, 5 + bytes.readUInt32BE(1));
+      const originalVod = fields(unframe(firstFrame)).find(field => field.number === 1);
+      assert.ok(originalVod);
+      assert.deepEqual(fields(payload).find(field => field.number === 1), originalVod, 'Keep video and audio stream data intact');
+    });
+  }
+}
 
 test('season response retains Global enhancements and removes payment', async () => {
   const { result, storage } = await run({
@@ -291,7 +343,7 @@ test('overlapping endpoints select only one response script in the integrated pl
   for (const url of [viewUrl, 'https://api.bilibili.com/pgc/view/v2/app/season?season_id=123']) {
     const candidates = rules.filter(rule => rule.regex.test(url));
     assert.equal(candidates.length, 1, url);
-    assert.ok(candidates[0].script.endsWith('/global-integration.js'));
+    assert.ok(new URL(candidates[0].script).pathname.endsWith('/global-integration.js'));
   }
   assert.ok(!lines.some(line => line.includes('pgc\\/view\\/v2\\/app\\/season') && line.includes('response.json.jq')));
   assert.ok(!lines.some(line => /^DOMAIN, (api|app)\.biliapi\.(com|net), REJECT$/.test(line)));
@@ -319,7 +371,16 @@ test('generated code retains source provenance, license and isolated arguments',
   assert.match(manifest.core_response_sha256, /^[0-9a-f]{64}$/);
   assert.ok(fs.readFileSync(path.join(root, 'third_party/biliverse-global/LICENSE'), 'utf8').includes('Apache License'));
   assert.ok(!source.includes('globalThis.$argument'));
+  assert.ok(!source.includes('globalThis.$httpClient'));
   assert.ok(!source.includes('/*__GLOBAL_'));
+});
+
+test('Global script URLs use a normalized content digest to avoid stale Loon caches', () => {
+  const { createHash } = require('node:crypto');
+  const digest = createHash('sha256').update(source.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+  const urls = [...plugin.matchAll(/script\("([^"]+\/global-integration\.js[^\"]*)"/g)];
+  assert.equal(urls.length, 18);
+  for (const [, url] of urls) assert.equal(new URL(url).searchParams.get('v'), digest);
 });
 
 if (process.env.BILIBILI_HAR_PATH) {
